@@ -5,279 +5,140 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YTT Homework Schedule</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+:root{--indigo:#2D2B4E;--indigo-lt:#EEEDF5;--clay:#C4714E;--clay-lt:#F5E6DE;--clay-dk:#8c4a2f;--sage:#8FA98C;--sage-lt:#E4EDE4;--sage-dk:#4a6b4d;--gold:#D4A96A;--gold-lt:#FDF3E3;--parchment:#F5F0E6;--stone:#DDD8CE;--muted:#9A8E82;--warm-white:#FAF7F2;--umber:#3B2A1A;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--umber);padding-bottom:80px;}
+.header{background:var(--indigo);padding:48px 32px 36px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:var(--clay);opacity:.08;top:-150px;right:-100px;}
+.header-eyebrow{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:var(--warm-white);line-height:1.2;margin-bottom:10px;position:relative;}
+.header h1 em{font-style:italic;color:var(--gold);}
+.header-sub{font-size:12px;color:#9890C0;font-weight:300;position:relative;}
+.progress-wrap{background:var(--indigo);border-top:1px solid rgba(255,255,255,.06);padding:20px 32px 28px;}
+.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.progress-label-text{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#9890C0;}
+.progress-label-week{font-size:12px;font-weight:500;color:var(--gold);}
+.progress-track{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--clay),var(--gold));transition:width .5s ease;}
+.week-ticks{display:flex;justify-content:space-between;margin-top:6px;}
+.week-tick{font-size:8px;color:rgba(255,255,255,.2);font-family:'DM Mono',monospace;}
+.week-tick.active{color:var(--gold);font-weight:500;}
+.week-tick.done{color:var(--sage);}
+.content{max-width:820px;margin:0 auto;padding:0 20px;}
+.week-nav{position:sticky;top:0;z-index:100;background:rgba(245,240,230,.97);backdrop-filter:blur(8px);border-bottom:1px solid var(--stone);padding:10px 20px;display:flex;gap:6px;flex-wrap:wrap;margin:0 -20px;}
+.wn-btn{padding:4px 10px;border-radius:14px;font-size:10px;font-weight:500;cursor:pointer;border:.5px solid var(--stone);background:var(--warm-white);color:var(--muted);transition:all .15s;white-space:nowrap;}
+.wn-btn:hover{background:var(--indigo);color:white;border-color:var(--indigo);}
+.wn-btn.current{background:var(--clay);color:white;border-color:var(--clay);}
+.wn-btn.done{background:var(--sage-lt);color:var(--sage-dk);border-color:var(--sage);}
+.wn-btn.off{background:var(--stone);color:var(--muted);}
 
-:root {
-  --indigo:    #2D2B4E;
-  --indigo-lt: #EEEDF5;
-  --clay:      #C4714E;
-  --clay-lt:   #F5E6DE;
-  --clay-dk:   #8c4a2f;
-  --sage:      #8FA98C;
-  --sage-lt:   #E4EDE4;
-  --sage-dk:   #4a6b4d;
-  --gold:      #D4A96A;
-  --gold-lt:   #FDF3E3;
-  --parchment: #F5F0E6;
-  --stone:     #DDD8CE;
-  --muted:     #9A8E82;
-  --warm-white:#FAF7F2;
-  --umber:     #3B2A1A;
-}
+/* TAB BAR */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--stone);margin-bottom:24px;margin-top:20px;}
+.tab-btn{padding:10px 16px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;}
+.tab-btn.active{color:var(--clay);border-bottom-color:var(--clay);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--parchment); color: var(--umber); padding-bottom: 80px; }
+/* TODAY VIEW */
+.today-header{background:var(--umber);border-radius:14px;padding:18px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.today-date-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#b0a090;}
+.today-date{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--warm-white);}
+.today-progress-wrap{text-align:right;}
+.today-progress-label{font-size:9px;color:#b0a090;margin-bottom:4px;}
+.today-progress-ring{position:relative;width:44px;height:44px;margin-left:auto;}
+.today-ring-svg{transform:rotate(-90deg);}
+.today-ring-bg{fill:none;stroke:rgba(255,255,255,.15);stroke-width:4;}
+.today-ring-fill{fill:none;stroke:var(--gold);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .4s ease;}
+.today-ring-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--gold);}
+.today-section-label{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;}
+.daily-task-card{background:var(--warm-white);border:.5px solid var(--stone);border-radius:12px;margin-bottom:6px;overflow:hidden;}
+.daily-task-row{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;transition:background .1s;}
+.daily-task-row:hover{background:rgba(0,0,0,.02);}
+.daily-task-row.done-row{background:var(--sage-lt);}
+.dtask-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--stone);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--sage-dk);transition:all .15s;}
+.dtask-check.done{background:var(--sage);border-color:var(--sage);color:white;}
+.dtask-info{flex:1;}
+.dtask-name{font-size:13px;font-weight:500;color:var(--umber);line-height:1.3;}
+.dtask-name.done{text-decoration:line-through;color:var(--muted);}
+.dtask-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+.dtask-time{font-size:10px;font-weight:500;color:var(--muted);flex-shrink:0;}
 
-/* HEADER */
-.header {
-  background: var(--indigo);
-  padding: 48px 32px 36px;
-  position: relative;
-  overflow: hidden;
-}
-.header::before {
-  content: '';
-  position: absolute;
-  width: 400px; height: 400px;
-  border-radius: 50%;
-  background: var(--clay);
-  opacity: 0.08;
-  top: -150px; right: -100px;
-}
-.header-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
-.header h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 300; color: var(--warm-white); line-height: 1.2; margin-bottom: 10px; position: relative; }
-.header h1 em { font-style: italic; color: var(--gold); }
-.header-sub { font-size: 12px; color: #9890C0; font-weight: 300; position: relative; }
-
-/* PROGRESS ARC */
-.progress-wrap {
-  background: var(--indigo);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 20px 32px 28px;
-}
-.progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.progress-label-text { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9890C0; }
-.progress-label-week { font-size: 12px; font-weight: 500; color: var(--gold); }
-.progress-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--clay), var(--gold)); transition: width .5s ease; }
-.week-ticks { display: flex; justify-content: space-between; margin-top: 6px; }
-.week-tick { font-size: 8px; color: rgba(255,255,255,0.2); font-family: 'DM Mono', monospace; }
-.week-tick.active { color: var(--gold); font-weight: 500; }
-.week-tick.done { color: var(--sage); }
-
-/* CONTENT */
-.content { max-width: 820px; margin: 0 auto; padding: 0 20px; }
-
-/* STICKY NAV */
-.week-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(245,240,230,0.97);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--stone);
-  padding: 10px 20px;
-  display: flex; gap: 6px; flex-wrap: wrap;
-  margin: 0 -20px;
-}
-.wn-btn {
-  padding: 4px 10px; border-radius: 14px;
-  font-size: 10px; font-weight: 500; cursor: pointer;
-  border: 0.5px solid var(--stone);
-  background: var(--warm-white); color: var(--muted);
-  transition: all .15s; white-space: nowrap;
-}
-.wn-btn:hover { background: var(--indigo); color: white; border-color: var(--indigo); }
-.wn-btn.current { background: var(--clay); color: white; border-color: var(--clay); }
-.wn-btn.done { background: var(--sage-lt); color: var(--sage-dk); border-color: var(--sage); }
-.wn-btn.off { background: var(--stone); color: var(--muted); }
+/* JOURNAL COUNTER */
+.journal-counter{background:var(--warm-white);border:.5px solid var(--stone);border-radius:12px;padding:14px;margin-bottom:6px;}
+.jc-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.jc-dots{display:flex;gap:8px;}
+.jc-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--stone);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--muted);transition:all .15s;}
+.jc-dot.white-seed{background:var(--sage-lt);border-color:var(--sage);color:var(--sage-dk);}
+.jc-dot.done-dot{background:var(--gold);border-color:var(--gold);color:white;}
+.jc-desc{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;}
 
 /* WEEK CARDS */
-.week-section { margin-top: 32px; scroll-margin-top: 60px; }
+.week-section{margin-top:24px;scroll-margin-top:60px;}
+.week-card{background:var(--warm-white);border:.5px solid var(--stone);border-radius:16px;overflow:hidden;margin-bottom:10px;}
+.week-card.current-week{border:2px solid var(--clay);}
+.week-card.off-week{opacity:.5;}
+.week-card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;gap:12px;}
+.week-card-header:hover{background:rgba(0,0,0,.01);}
+.week-left{display:flex;align-items:center;gap:12px;}
+.week-badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+.badge-done{background:var(--sage-lt);color:var(--sage-dk);border:1.5px solid var(--sage);}
+.badge-current{background:var(--clay);color:white;}
+.badge-future{background:var(--indigo-lt);color:var(--indigo);border:1.5px solid rgba(45,43,78,.2);}
+.badge-off{background:var(--stone);color:var(--muted);}
+.week-meta{display:flex;flex-direction:column;gap:2px;}
+.week-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:500;color:var(--umber);line-height:1.3;}
+.week-date{font-size:10px;color:var(--muted);}
+.week-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.week-progress-pill{font-size:10px;font-weight:500;padding:3px 10px;border-radius:10px;}
+.pill-done{background:var(--sage-lt);color:var(--sage-dk);}
+.pill-current{background:var(--clay-lt);color:var(--clay-dk);}
+.pill-off{background:var(--stone);color:var(--muted);}
+.pill-future{background:var(--indigo-lt);color:var(--indigo);}
+.chevron{font-size:11px;color:var(--stone);transition:transform .2s;}
+.week-body{display:none;border-top:.5px solid var(--stone);}
+.week-body.open{display:block;}
+.schedule-strip{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:.5px solid var(--stone);}
+.sched-day{padding:10px 12px;border-right:.5px solid var(--stone);}
+.sched-day:last-child{border-right:none;}
+.sched-day-name{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.sched-day-time{font-size:10px;color:var(--umber);font-weight:500;line-height:1.4;}
+.reading-section{padding:14px 18px;}
+.reading-book{margin-bottom:14px;}
+.reading-book:last-child{margin-bottom:0;}
+.book-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.book-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.book-name{font-size:11px;font-weight:600;color:var(--umber);}
+.task-list{display:flex;flex-direction:column;gap:5px;padding-left:16px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .1s;}
+.task-item:hover{background:rgba(0,0,0,.02);}
+.task-cb{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--stone);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--sage-dk);transition:all .15s;}
+.task-cb.done{background:var(--sage-lt);border-color:var(--sage);}
+.task-txt{font-size:12px;color:var(--umber);line-height:1.5;}
+.task-txt.done{text-decoration:line-through;color:var(--stone);}
 
-.week-card {
-  background: var(--warm-white);
-  border: 0.5px solid var(--stone);
-  border-radius: 16px;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-.week-card.current-week { border: 2px solid var(--clay); }
-.week-card.off-week { opacity: 0.5; }
+/* READING PROGRESS */
+.read-progress-wrap{margin-top:8px;padding-left:16px;}
+.read-progress-bar-wrap{height:6px;background:var(--stone);border-radius:3px;margin-bottom:4px;overflow:hidden;}
+.read-progress-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--clay),var(--gold));transition:width .3s;}
+.read-progress-controls{display:flex;align-items:center;gap:8px;}
+.read-input{width:52px;border:1px solid var(--stone);border-radius:6px;padding:3px 6px;font-size:11px;color:var(--umber);background:var(--warm-white);font-family:'DM Sans',sans-serif;}
+.read-of{font-size:11px;color:var(--muted);}
+.read-pct{font-size:10px;font-weight:600;color:var(--clay);}
 
-.week-card-header {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  cursor: pointer;
-  gap: 12px;
-}
-.week-card-header:hover { background: rgba(0,0,0,0.01); }
-
-.week-left { display: flex; align-items: center; gap: 12px; }
-.week-badge {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 600;
-  flex-shrink: 0;
-}
-.badge-done { background: var(--sage-lt); color: var(--sage-dk); border: 1.5px solid var(--sage); }
-.badge-current { background: var(--clay); color: white; }
-.badge-future { background: var(--indigo-lt); color: var(--indigo); border: 1.5px solid rgba(45,43,78,0.2); }
-.badge-off { background: var(--stone); color: var(--muted); }
-
-.week-meta { display: flex; flex-direction: column; gap: 2px; }
-.week-title { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 500; color: var(--umber); line-height: 1.3; }
-.week-date { font-size: 10px; color: var(--muted); font-weight: 400; }
-
-.week-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.week-progress-pill {
-  font-size: 10px; font-weight: 500;
-  padding: 3px 10px; border-radius: 10px;
-}
-.pill-done { background: var(--sage-lt); color: var(--sage-dk); }
-.pill-current { background: var(--clay-lt); color: var(--clay-dk); }
-.pill-off { background: var(--stone); color: var(--muted); }
-.pill-future { background: var(--indigo-lt); color: var(--indigo); }
-.chevron { font-size: 11px; color: var(--stone); transition: transform .2s; }
-
-.week-body { display: none; border-top: 0.5px solid var(--stone); }
-.week-body.open { display: block; }
-
-/* SCHEDULE STRIP */
-.schedule-strip {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 0;
-  border-bottom: 0.5px solid var(--stone);
-}
-.sched-day {
-  padding: 12px 14px;
-  border-right: 0.5px solid var(--stone);
-}
-.sched-day:last-child { border-right: none; }
-.sched-day-name { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-.sched-day-time { font-size: 11px; color: var(--umber); font-weight: 500; }
-.sched-day-detail { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
-
-/* READING SECTION */
-.reading-section { padding: 14px 18px; }
-.reading-book { margin-bottom: 14px; }
-.reading-book:last-child { margin-bottom: 0; }
-.book-header {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 6px;
-}
-.book-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.book-name { font-size: 11px; font-weight: 600; color: var(--umber); }
-.task-list { display: flex; flex-direction: column; gap: 5px; padding-left: 16px; }
-.task-item {
-  display: flex; align-items: flex-start; gap: 8px;
-  cursor: pointer;
-  padding: 4px 6px; border-radius: 6px;
-  transition: background .1s;
-}
-.task-item:hover { background: rgba(0,0,0,0.02); }
-.task-cb {
-  width: 15px; height: 15px;
-  border-radius: 3px;
-  border: 1.5px solid var(--stone);
-  flex-shrink: 0; margin-top: 1px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 9px; color: var(--sage-dk);
-  transition: all .15s;
-}
-.task-cb.done { background: var(--sage-lt); border-color: var(--sage); }
-.task-txt { font-size: 12px; color: var(--umber); line-height: 1.5; }
-.task-txt.done { text-decoration: line-through; color: var(--stone); }
-
-/* SPECIAL BADGE */
-.special-badge {
-  margin: 0 18px 14px;
-  background: var(--indigo-lt);
-  border-left: 3px solid var(--indigo);
-  border-radius: 0 8px 8px 0;
-  padding: 8px 12px;
-  font-size: 11px; color: var(--indigo);
-  line-height: 1.5;
-}
-.special-badge strong { font-weight: 600; }
-
-/* OFF CARD */
-.off-message {
-  padding: 20px 18px;
-  text-align: center;
-  font-size: 13px; color: var(--muted);
-  font-style: italic;
-}
-
-/* BOOK COLOR MAP */
-.book-4a     { background: #C4714E; }
-.book-hyw    { background: #8FA98C; }
-.book-sutras { background: #2D2B4E; }
-.book-chakra { background: #B8A8D4; }
-.book-key    { background: #D4A96A; }
-.book-tao    { background: #7A9E7E; }
-.book-pow    { background: #C4A35A; }
-.book-gita   { background: #A0522D; }
-.book-yogi   { background: #6B8E6B; }
-.book-soul   { background: #8B7BA8; }
-.book-manual { background: #9A8E82; }
-
-/* EXTRA HOMEWORK */
-.extra-section { border-top: 0.5px solid var(--stone); }
-.extra-label { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 10px 18px 4px; }
-
-/* DAILY PRACTICES */
-.daily-section {
-  margin-top: 32px;
-}
-.daily-label { font-size:9px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--stone); }
-.daily-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; }
-.daily-card { background:var(--warm-white); border:0.5px solid var(--stone); border-radius:12px; padding:16px; }
-.daily-card-icon { font-size:22px; margin-bottom:8px; }
-.daily-card-time { font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
-.daily-card-name { font-size:13px; font-weight:500; color:var(--umber); margin-bottom:5px; }
-.daily-card-desc { font-size:11px; color:var(--muted); line-height:1.6; }
-
-/* WEEKLY PRACTICES */
-.weekly-strip {
-  background: var(--gold-lt);
-  border-top: 0.5px solid var(--stone);
-  padding: 12px 18px;
-  display: flex; flex-direction: column; gap: 5px;
-}
-.weekly-strip-label { font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#7a5200; margin-bottom:4px; }
-
-/* SUMMARY BAR */
-.summary {
-  background: var(--indigo);
-  border-radius: 14px;
-  padding: 24px;
-  margin-top: 32px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
-  gap: 16px;
-}
-.sum-item h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: var(--gold); }
-.sum-item p { font-size: 10px; color: #9890C0; margin-top: 2px; }
-
-/* BOOK KEY */
-.book-key-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
-  gap: 8px;
-  margin-top: 24px;
-}
-.bk-item {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--warm-white);
-  border: 0.5px solid var(--stone);
-  border-radius: 8px;
-  padding: 8px 10px;
-}
-.bk-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.bk-text { font-size: 11px; color: var(--umber); line-height: 1.3; }
-.bk-abbr { font-weight: 600; color: var(--muted); font-size: 10px; }
+.special-badge{margin:0 18px 0;background:var(--indigo-lt);border-left:3px solid var(--indigo);border-radius:0 8px 8px 0;padding:8px 12px;font-size:11px;color:var(--indigo);line-height:1.5;}
+.off-message{padding:20px 18px;text-align:center;font-size:13px;color:var(--muted);font-style:italic;}
+.book-4a{background:#C4714E;}.book-hyw{background:#8FA98C;}.book-sutras{background:#2D2B4E;}.book-chakra{background:#B8A8D4;}.book-key{background:#D4A96A;}.book-tao{background:#7A9E7E;}.book-pow{background:#C4A35A;}.book-gita{background:#A0522D;}.book-yogi{background:#6B8E6B;}.book-soul{background:#8B7BA8;}.book-manual{background:#9A8E82;}
+.weekly-strip{background:var(--gold-lt);border-top:.5px solid var(--stone);padding:12px 18px;display:flex;flex-direction:column;gap:5px;}
+.weekly-strip-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7a5200;margin-bottom:4px;}
+.summary{background:var(--indigo);border-radius:14px;padding:24px;margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;}
+.sum-item h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;color:var(--gold);}
+.sum-item p{font-size:10px;color:#9890C0;margin-top:2px;}
+.book-key-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:24px;}
+.bk-item{display:flex;align-items:center;gap:8px;background:var(--warm-white);border:.5px solid var(--stone);border-radius:8px;padding:8px 10px;}
+.bk-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.bk-text{font-size:11px;color:var(--umber);line-height:1.3;}
+.bk-abbr{font-weight:600;color:var(--muted);font-size:10px;}
 </style>
 </head>
 <body>
@@ -287,325 +148,418 @@ body { font-family: 'DM Sans', sans-serif; background: var(--parchment); color: 
   <h1>Your <em>homework</em><br>schedule</h1>
   <p class="header-sub">V12 Dallas · with Stacy · Aug 14 – Nov 14, 2026 · <span id="current-week-label"></span></p>
 </div>
-
 <div class="progress-wrap">
   <div class="progress-label">
     <span class="progress-label-text">Training progress</span>
-    <span class="progress-label-week" id="progress-label">Week 2 of 14</span>
+    <span class="progress-label-week" id="progress-label"></span>
   </div>
-  <div class="progress-track">
-    <div class="progress-fill" id="progress-fill" style="width:14%"></div>
-  </div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
   <div class="week-ticks" id="week-ticks"></div>
 </div>
 
 <div class="content">
   <div class="week-nav" id="week-nav"></div>
 
-  <div id="weeks-container"></div>
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('today',this)">Today</button>
+    <button class="tab-btn" onclick="switchTab('weeks',this)">All Weeks</button>
+    <button class="tab-btn" onclick="switchTab('reading',this)">Reading</button>
+  </div>
 
-  <!-- DAILY PRACTICES -->
-  <div class="daily-section">
-    <div class="daily-label">Daily practices — every single day</div>
-    <div class="daily-grid">
-      <div class="daily-card">
-        <div class="daily-card-icon">🌅</div>
-        <div class="daily-card-time">Morning</div>
-        <div class="daily-card-name">AM Meditation</div>
-        <div class="daily-card-desc">Sit before your phone. 5–10 min minimum. Ujjayi or natural breath. This is required homework — not optional.</div>
+  <!-- TODAY TAB -->
+  <div class="tab-pane active" id="tab-today">
+    <div class="today-header">
+      <div>
+        <div class="today-date-label">Today</div>
+        <div class="today-date" id="today-date-display"></div>
       </div>
-      <div class="daily-card">
-        <div class="daily-card-icon">🧘</div>
-        <div class="daily-card-time">Morning</div>
-        <div class="daily-card-name">Personal Flow</div>
-        <div class="daily-card-desc">Your own practice — even 20 minutes. Not Stacy's class. YOUR sequence. Start building the muscle of moving from the inside out.</div>
+      <div class="today-progress-wrap">
+        <div class="today-progress-label" style="font-size:9px;color:#b0a090;margin-bottom:4px;text-align:right;">done today</div>
+        <div class="today-progress-ring">
+          <svg class="today-ring-svg" width="44" height="44" viewBox="0 0 44 44">
+            <circle class="today-ring-bg" cx="22" cy="22" r="18"/>
+            <circle class="today-ring-fill" id="today-ring" cx="22" cy="22" r="18" stroke-dasharray="113" stroke-dashoffset="113"/>
+          </svg>
+          <div class="today-ring-text" id="today-ring-pct">0%</div>
+        </div>
       </div>
-      <div class="daily-card">
-        <div class="daily-card-icon">✍️</div>
-        <div class="daily-card-time">Anytime</div>
-        <div class="daily-card-name">Journal</div>
-        <div class="daily-card-desc">One sentence minimum. What did you notice today in your body, your mind, or your practice? Self-observation is core curriculum.</div>
+    </div>
+
+    <div class="today-section-label">Morning</div>
+    <div class="daily-task-card">
+      <div class="daily-task-row" id="dt-am-med" onclick="toggleDaily('am-med')">
+        <div class="dtask-check" id="dc-am-med">🧘</div>
+        <div class="dtask-info">
+          <div class="dtask-name" id="dn-am-med">AM Meditation · 20 min</div>
+          <div class="dtask-sub">Sit before your phone. Ujjayi or natural breath.</div>
+        </div>
+        <div class="dtask-time">Morning</div>
       </div>
-      <div class="daily-card">
-        <div class="daily-card-icon">🌙</div>
-        <div class="daily-card-time">Evening</div>
-        <div class="daily-card-name">PM Meditation</div>
-        <div class="daily-card-desc">Wind down. 5–10 min. Let the day settle. Nadi Shodhana (alternate nostril) is perfect here — it signals the nervous system to rest.</div>
+    </div>
+    <div class="daily-task-card">
+      <div class="daily-task-row" id="dt-jip" onclick="toggleDaily('jip')">
+        <div class="dtask-check" id="dc-jip">🔥</div>
+        <div class="dtask-info">
+          <div class="dtask-name" id="dn-jip">JIP Practice</div>
+          <div class="dtask-sub">Journey Into Power sequence · 6 days/week, one rest day</div>
+        </div>
+        <div class="dtask-time">Morning</div>
       </div>
+    </div>
+
+    <div class="today-section-label">Throughout the day — White &amp; Black Seed Journal (pg 266 HYW)</div>
+    <div class="journal-counter" id="journal-counter">
+      <div class="jc-label">Tap each dot when you journal (aim for 6× — before meals + bedtime)</div>
+      <div class="jc-dots" id="jc-dots"></div>
+      <div class="jc-desc">Ancient masters: white seed = good action in last few hours · black seed = not-so-good action. Review all at bedtime. Plan to do better tomorrow.</div>
+    </div>
+
+    <div class="today-section-label">Evening</div>
+    <div class="daily-task-card">
+      <div class="daily-task-row" id="dt-pm-med" onclick="toggleDaily('pm-med')">
+        <div class="dtask-check" id="dc-pm-med">🌙</div>
+        <div class="dtask-info">
+          <div class="dtask-name" id="dn-pm-med">PM Meditation · 20 min</div>
+          <div class="dtask-sub">Wind down. Nadi Shodhana (alternate nostril) is perfect.</div>
+        </div>
+        <div class="dtask-time">Evening</div>
+      </div>
+    </div>
+    <div class="daily-task-card">
+      <div class="daily-task-row" id="dt-bedtime" onclick="toggleDaily('bedtime')">
+        <div class="dtask-check" id="dc-bedtime">📖</div>
+        <div class="dtask-info">
+          <div class="dtask-name" id="dn-bedtime">Bedtime review</div>
+          <div class="dtask-sub">Review your seeds. Take joy in the white. Plan better for the black.</div>
+        </div>
+        <div class="dtask-time">Bedtime</div>
+      </div>
+    </div>
+    <div class="daily-task-card">
+      <div class="daily-task-row" id="dt-news" onclick="toggleDaily('news')">
+        <div class="dtask-check" id="dc-news">📵</div>
+        <div class="dtask-info">
+          <div class="dtask-name" id="dn-news">News + social media fast</div>
+          <div class="dtask-sub">This week's practice. Did you stay off today?</div>
+        </div>
+        <div class="dtask-time">All day</div>
+      </div>
+    </div>
+    <div class="daily-task-card">
+      <div class="daily-task-row" id="dt-complaint" onclick="toggleDaily('complaint')">
+        <div class="dtask-check" id="dc-complaint">👁️</div>
+        <div class="dtask-info">
+          <div class="dtask-name" id="dn-complaint">Complaint observation</div>
+          <div class="dtask-sub">Notice every time you complained or made a clear request instead.</div>
+        </div>
+        <div class="dtask-time">All day</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <button onclick="resetToday()" style="padding:8px 18px;border-radius:20px;border:1px solid var(--stone);background:var(--warm-white);color:var(--muted);font-size:11px;cursor:pointer;">Reset today's checks</button>
     </div>
   </div>
 
-  <div class="summary">
-    <div class="sum-item"><h3>10</h3><p>books total</p></div>
-    <div class="sum-item"><h3>14</h3><p>weekends</p></div>
-    <div class="sum-item"><h3>2</h3><p>weekends off</p></div>
-    <div class="sum-item"><h3>Nov 14</h3><p>graduation</p></div>
+  <!-- WEEKS TAB -->
+  <div class="tab-pane" id="tab-weeks">
+    <div id="weeks-container"></div>
+    <div class="summary">
+      <div class="sum-item"><h3>10</h3><p>books total</p></div>
+      <div class="sum-item"><h3>14</h3><p>weekends</p></div>
+      <div class="sum-item"><h3>2</h3><p>weekends off</p></div>
+      <div class="sum-item"><h3>Nov 14</h3><p>graduation</p></div>
+    </div>
+    <div style="margin-top:24px;">
+      <div style="font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--stone);">Book key</div>
+      <div class="book-key-grid" id="book-key"></div>
+    </div>
   </div>
 
-  <div style="margin-top:24px;">
-    <div style="font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--stone);">Book key</div>
-    <div class="book-key-grid" id="book-key"></div>
+  <!-- READING TAB -->
+  <div class="tab-pane" id="tab-reading">
+    <div id="reading-tracker"></div>
   </div>
 </div>
 
 <script>
-// Auto-calculate current week based on today's date
+// ── DATE & WEEK ──────────────────────────────────────────────────────────
 function getCurrentWeek() {
   const today = new Date();
   const schedule = [
-    { n:1,  d:'2026-08-14' }, { n:2,  d:'2026-08-21' },
-    { n:3,  d:'2026-08-28' }, { n:4,  d:'2026-09-04' },
-    { n:5,  d:'2026-09-11' }, { n:6,  d:'2026-09-18' },
-    { n:7,  d:'2026-09-25' }, { n:8,  d:'2026-10-02' },
-    { n:9,  d:'2026-10-09' }, { n:10, d:'2026-10-16' },
-    { n:11, d:'2026-10-23' }, { n:12, d:'2026-10-30' },
-    { n:13, d:'2026-11-06' }, { n:14, d:'2026-11-13' },
+    {n:1,d:'2026-08-14'},{n:2,d:'2026-08-21'},{n:3,d:'2026-08-28'},
+    {n:4,d:'2026-09-04'},{n:5,d:'2026-09-11'},{n:6,d:'2026-09-18'},
+    {n:7,d:'2026-09-25'},{n:8,d:'2026-10-02'},{n:9,d:'2026-10-09'},
+    {n:10,d:'2026-10-16'},{n:11,d:'2026-10-23'},{n:12,d:'2026-10-30'},
+    {n:13,d:'2026-11-06'},{n:14,d:'2026-11-13'},
   ];
   let current = 1;
-  for (const w of schedule) {
-    if (today >= new Date(w.d)) current = w.n;
-    else break;
-  }
+  for (const w of schedule) { if (today >= new Date(w.d)) current = w.n; else break; }
   return current;
 }
 const CURRENT_WEEK = getCurrentWeek();
+const TODAY_KEY = new Date().toISOString().slice(0,10);
 
+// ── STORAGE ──────────────────────────────────────────────────────────────
+function load(key) { try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch { return {}; } }
+function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
+
+// ── TABS ─────────────────────────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── TODAY DATE ────────────────────────────────────────────────────────────
+const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const now = new Date();
+document.getElementById('today-date-display').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+
+// ── HEADER ────────────────────────────────────────────────────────────────
+document.getElementById('current-week-label').textContent = `Week ${CURRENT_WEEK} of 14`;
+document.getElementById('progress-label').textContent = `Week ${CURRENT_WEEK} of 14`;
+document.getElementById('progress-fill').style.width = `${(CURRENT_WEEK/14)*100}%`;
+
+// ── DAILY TASKS ───────────────────────────────────────────────────────────
+const DAILY_IDS = ['am-med','jip','pm-med','bedtime','news','complaint'];
+const DAILY_EMOJIS = {'am-med':'🧘','jip':'🔥','pm-med':'🌙','bedtime':'📖','news':'📵','complaint':'👁️'};
+
+function updateRing() {
+  const todayData = load('daily-'+TODAY_KEY);
+  const journalCount = todayData['journal-count'] || 0;
+  let done = 0;
+  DAILY_IDS.forEach(id => { if (todayData[id]) done++; });
+  // Journal counts as done if >= 6
+  if (journalCount >= 6) done++;
+  const total = DAILY_IDS.length + 1; // +1 for journal
+  const pct = Math.round((done/total)*100);
+  const circ = 113;
+  document.getElementById('today-ring').style.strokeDashoffset = circ - (circ * pct / 100);
+  document.getElementById('today-ring-pct').textContent = pct + '%';
+}
+
+function toggleDaily(id) {
+  const todayData = load('daily-'+TODAY_KEY);
+  todayData[id] = !todayData[id];
+  save('daily-'+TODAY_KEY, todayData);
+  const row = document.getElementById('dt-'+id);
+  const check = document.getElementById('dc-'+id);
+  const name = document.getElementById('dn-'+id);
+  if (todayData[id]) {
+    row.classList.add('done-row');
+    check.classList.add('done');
+    check.textContent = '✓';
+    name.classList.add('done');
+  } else {
+    row.classList.remove('done-row');
+    check.classList.remove('done');
+    check.textContent = DAILY_EMOJIS[id];
+    name.classList.remove('done');
+  }
+  updateRing();
+}
+
+function resetToday() {
+  save('daily-'+TODAY_KEY, {});
+  DAILY_IDS.forEach(id => {
+    document.getElementById('dt-'+id).classList.remove('done-row');
+    const c = document.getElementById('dc-'+id); c.classList.remove('done'); c.textContent = DAILY_EMOJIS[id];
+    document.getElementById('dn-'+id).classList.remove('done');
+  });
+  buildJournalDots(0);
+  updateRing();
+}
+
+// Restore daily state
+const todayData = load('daily-'+TODAY_KEY);
+DAILY_IDS.forEach(id => {
+  if (todayData[id]) {
+    document.getElementById('dt-'+id).classList.add('done-row');
+    const c = document.getElementById('dc-'+id); c.classList.add('done'); c.textContent = '✓';
+    document.getElementById('dn-'+id).classList.add('done');
+  }
+});
+
+// ── JOURNAL DOTS ──────────────────────────────────────────────────────────
+function buildJournalDots(count) {
+  const wrap = document.getElementById('jc-dots');
+  wrap.innerHTML = '';
+  for (let i = 0; i < 6; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'jc-dot' + (i < count ? ' done-dot' : '');
+    dot.textContent = i < count ? '✓' : (i+1);
+    dot.onclick = () => {
+      const d = load('daily-'+TODAY_KEY);
+      const newCount = (d['journal-count'] || 0) === i+1 ? i : i+1;
+      d['journal-count'] = newCount;
+      save('daily-'+TODAY_KEY, d);
+      buildJournalDots(newCount);
+      updateRing();
+    };
+    wrap.appendChild(dot);
+  }
+}
+buildJournalDots(todayData['journal-count'] || 0);
+updateRing();
+
+// ── WEEK TICKS ────────────────────────────────────────────────────────────
+const ticksEl = document.getElementById('week-ticks');
+[1,2,3,'—',4,5,6,7,8,9,'—',10,11,12].forEach(t => {
+  const el = document.createElement('span');
+  el.className = 'week-tick';
+  const wn = typeof t === 'number' ? t : null;
+  if (wn === CURRENT_WEEK) el.classList.add('active');
+  else if (wn && wn < CURRENT_WEEK) el.classList.add('done');
+  el.textContent = t === '—' ? 'off' : `W${t}`;
+  ticksEl.appendChild(el);
+});
+
+// ── BOOKS ─────────────────────────────────────────────────────────────────
 const books = [
-  { id:'4a',     dot:'book-4a',     abbr:'4A',      name:'The Four Agreements',              author:'Don Miguel Ruiz' },
-  { id:'hyw',    dot:'book-hyw',    abbr:'HYW',     name:'How Yoga Works',                   author:'Michael Roach' },
-  { id:'sutras', dot:'book-sutras', abbr:'Sutras',  name:'The Yoga Sutras of Patanjali',     author:'Sri Swami Satchidananda' },
-  { id:'chakra', dot:'book-chakra', abbr:'Chakra',  name:'Chakra Yoga',                      author:'Anodea Judith' },
-  { id:'key',    dot:'book-key',    abbr:'Key',     name:'The Key Poses of Yoga (Vol.2)',    author:'Ray Long MD' },
-  { id:'tao',    dot:'book-tao',    abbr:'Tao',     name:'Tao Te Ching',                     author:'Stephen Mitchell' },
-  { id:'pow',    dot:'book-pow',    abbr:'PoN',     name:'The Power of Now',                 author:'Eckhart Tolle' },
-  { id:'gita',   dot:'book-gita',   abbr:'Gita',    name:'Bhagavad Gita',                    author:'Stephen Mitchell' },
-  { id:'yogi',   dot:'book-yogi',   abbr:'YE',      name:'The Yogi Entrepreneur',            author:'Darren Main' },
-  { id:'soul',   dot:'book-soul',   abbr:'Soul',    name:'The Untethered Soul',              author:'Michael A. Singer' },
-  { id:'manual', dot:'book-manual', abbr:'Manual',  name:'Your Training Manual',             author:'V12 / Baptiste' },
+  {id:'4a',dot:'book-4a',abbr:'4A',name:'The Four Agreements',author:'Don Miguel Ruiz',totalPages:138},
+  {id:'hyw',dot:'book-hyw',abbr:'HYW',name:'How Yoga Works',author:'Michael Roach',totalChapters:48},
+  {id:'sutras',dot:'book-sutras',abbr:'Sutras',name:'The Yoga Sutras of Patanjali',author:'Sri Swami Satchidananda',totalPages:280},
+  {id:'chakra',dot:'book-chakra',abbr:'Chakra',name:'Chakra Yoga',author:'Anodea Judith',totalChapters:7},
+  {id:'key',dot:'book-key',abbr:'Key',name:'The Key Poses of Yoga (Vol.2)',author:'Ray Long MD',totalPages:230},
+  {id:'tao',dot:'book-tao',abbr:'Tao',name:'Tao Te Ching',author:'Stephen Mitchell',totalChapters:81},
+  {id:'pow',dot:'book-pow',abbr:'PoN',name:'The Power of Now',author:'Eckhart Tolle',totalChapters:10},
+  {id:'gita',dot:'book-gita',abbr:'Gita',name:'Bhagavad Gita',author:'Stephen Mitchell',totalChapters:18},
+  {id:'yogi',dot:'book-yogi',abbr:'YE',name:'The Yogi Entrepreneur',author:'Darren Main',totalParts:3},
+  {id:'soul',dot:'book-soul',abbr:'Soul',name:'The Untethered Soul',author:'Michael A. Singer',totalParts:5},
+  {id:'manual',dot:'book-manual',abbr:'Manual',name:'Your Training Manual',author:'V12 / Baptiste',totalPages:1},
 ];
-
-const weeks = [
-  {
-    n:1, date:'Aug 14', title:'Kickoff — Welcome to the training', status:'done',
-    special:'First Friday 7–9pm only. Receive your manual. Meet your cohort.',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'Kickoff only', sun:'—' },
-    reading:[
-      { book:'4a', items:['Read The Four Agreements to page 23'] },
-      { book:'manual', items:['Review your training manual — read the full intro section'] },
-    ]
-  },
-  {
-    n:2, date:'Aug 21', title:'Week 2 — Breath & Foundation', status:'future',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 10:15–10:45am breakdown · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'4a',     items:['Pages 25–46'] },
-      { book:'hyw',    items:['Chapters 1–5'] },
-      { book:'sutras', items:['Sutras relevant to How Yoga Works ch1–5 (check cross-references in HYW)'] },
-      { book:'chakra', items:['Pages 1–27 (introduction + Chakra 1 opening)'] },
-      { book:'key',    items:['Part One: Theory (full section)'] },
-    ]
-  },
-  {
-    n:3, date:'Aug 28', title:'Week 3 — Yamas & Niyamas', status:'future',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'hyw',    items:['Chapters 6–11'] },
-      { book:'4a',     items:['Pages 47–61'] },
-      { book:'sutras', items:['Sutras relevant to HYW ch6–11'] },
-      { book:'chakra', items:['Pages 29–47'] },
-      { book:'key',    items:['Part Two: Practice — pages 35–120'] },
-      { book:'manual', items:['8 Limbs in Everyday Life — Yamas and Niyamas section'] },
-    ]
-  },
-  {
-    n:4, date:'Sep 4', title:'Labor Day Weekend', status:'off',
-    off:true
-  },
-  {
-    n:5, date:'Sep 11', title:'Week 4 — Chakras 1 & 2', status:'future',
-    special:'ANATOMY WEEKEND IS NEXT WEEK (Sep 18) — slides coming from Stacy.',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'4a',     items:['Pages 63–74'] },
-      { book:'hyw',    items:['Chapters 12–20', 'Journal 6 times per day — good and not-so-good actions — review at bedtime (pg 266 in HYW)'] },
-      { book:'sutras', items:['Sutras relevant to HYW ch12–20'] },
-      { book:'chakra', items:['Chakras 1 + 2 (full chapters)'] },
-      { book:'key',    items:['Part Two: pages 121 onwards'] },
-    ],
-    extra:[
-      {
-        label:'THIS WEEK\'S INQUIRY — Choosing or Going Along With?',
-        color:'#C4714E',
-        items:[
-          'Identify at least 3 things in your life you feel obligated to do or do for "reasons"',
-          'Rewrite each one starting with "I CHOOSE to..." instead',
-          'Notice: do you experience them differently when framed as a choice?',
-          'Journal about the difference in how they feel',
-          'Share your observations with your group',
-        ]
-      },
-      {
-        label:'DAILY HOMEWORK THIS WEEK',
-        color:'#2D2B4E',
-        items:[
-          'Journal 6 times during the day — both good and not-so-good actions — review at bedtime (pg 266 HYW)',
-          'Meditation 20 minutes × 2 per day (morning + evening)',
-          'Personal practice and self-care daily',
-          'News fast + social media fast this week',
-          'Complaint observations — track every time you complain',
-        ]
-      },
-      {
-        label:'SELF-OBSERVATION PRACTICE',
-        color:'#8FA98C',
-        items:[
-          'Observe yourself: practice non-complaining and making clear requests instead',
-          'Reflect: what does this have to do with impeccability and your word?',
-          'Self-observe and journal about: gossip, lying, creating stories to justify your position, complaining, making clear requests, acknowledgment and gratitude',
-        ]
-      },
-    ]
-  },
-  {
-    n:6, date:'Sep 18', title:'Week 5 — Physical Anatomy Weekend', status:'future',
-    special:'Physical Anatomy Workshop this weekend — open to the public.',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'4a',     items:['Pages 75–122 · The New Dream chapter'] },
-      { book:'hyw',    items:['Chapters 21–30'] },
-      { book:'sutras', items:['Sutras relevant to HYW ch21–30'] },
-      { book:'tao',    items:['Chapters 1–16 + write your notes'] },
-      { book:'chakra', items:['Chakras 3 + 4'] },
-      { book:'key',    items:['Index A'] },
-    ]
-  },
-  {
-    n:7, date:'Sep 25', title:'Week 6 — Power of Now begins', status:'future',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'hyw',    items:['Chapters 31–38'] },
-      { book:'sutras', items:['Sutras relevant to HYW ch31–38'] },
-      { book:'tao',    items:['Chapters 17–32 + notes'] },
-      { book:'chakra', items:['Chakras 5 + 6'] },
-      { book:'pow',    items:['Chapters 1–3'] },
-      { book:'gita',   items:['Introduction, About the Translation, Chapter 1'] },
-      { book:'key',    items:['Index B and C'] },
-    ]
-  },
-  {
-    n:8, date:'Oct 2', title:'Week 7 — Energetic Anatomy Weekend', status:'future',
-    special:'Energetic Anatomy / Chakra Yoga Workshop this weekend.',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'hyw',    items:['Chapters 39–48 (final chapters)'] },
-      { book:'sutras', items:['Sutras relevant to HYW ch39–48'] },
-      { book:'tao',    items:['Chapters 33–48 + notes'] },
-      { book:'chakra', items:['Chakra 7 — Crown'] },
-      { book:'pow',    items:['Chapters 4–6'] },
-      { book:'gita',   items:['Chapters 2–5'] },
-    ]
-  },
-  {
-    n:9, date:'Oct 9', title:'Week 8 — Integrating the Chakras', status:'future',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'tao',    items:['Chapters 49–64 + notes'] },
-      { book:'chakra', items:['Integration section — synthesize all 7 chakras'] },
-      { book:'pow',    items:['Chapters 7–9'] },
-      { book:'gita',   items:['Chapters 6–12'] },
-      { book:'soul',   items:['Introduction + Part 1'] },
-    ]
-  },
-  {
-    n:10, date:'Oct 16', title:'Week 9 — Art of Assisting Workshop', status:'future',
-    special:'Craft of Connection: Art of Assisting Workshop — open to the public. Note: Friday this week is 6–9pm (not 7pm).',
-    schedule:{ fri:'6–9pm · Book review + discussion (note earlier start)', sat:'9am–6pm training', sun:'1–7pm training' },
-    reading:[
-      { book:'tao',    items:['Chapters 65–81 + notes (final chapters — you\'re done with Tao!)'] },
-      { book:'pow',    items:['Chapter 10 (final chapter — done with Power of Now!)'] },
-      { book:'gita',   items:['Chapters 13–18 (final chapters — done with Bhagavad Gita!)'] },
-      { book:'soul',   items:['Part 2'] },
-    ]
-  },
-  {
-    n:11, date:'Oct 23', title:'Casa Alma Retreat', status:'off',
-    off:true,
-    special:'Off-site retreat — location: Casa Alma. This is part of the training even though there\'s no V12 class. Show up fully.'
-  },
-  {
-    n:12, date:'Oct 30', title:'Week 10 — The Entrepreneur Yogi', status:'future',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'soul',   items:['Part 3'] },
-      { book:'yogi',   items:['Introduction + Parts 1 and 2'] },
-    ]
-  },
-  {
-    n:13, date:'Nov 6', title:'Week 11 — Final Stretch', status:'future',
-    schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
-    reading:[
-      { book:'soul',   items:['Part 4'] },
-      { book:'yogi',   items:['Parts 2 and 3 (yes, Part 2 revisited — synthesize it)'] },
-    ]
-  },
-  {
-    n:14, date:'Nov 13', title:'🎓 Graduation Weekend', status:'future',
-    special:'Graduation is Saturday Nov 13. Come ready to celebrate everything you\'ve done.',
-    schedule:{ fri:'7–9pm · Final discussion', sat:'Graduation ceremony', sun:'Rest. You did it.' },
-    reading:[
-      { book:'soul',   items:['Part 5 — The final chapters of The Untethered Soul. Read slowly.'] },
-    ]
-  },
-];
-
 const bookColors = {
   '4a':'#C4714E','hyw':'#8FA98C','sutras':'#2D2B4E','chakra':'#B8A8D4',
   'key':'#D4A96A','tao':'#7A9E7E','pow':'#C4A35A','gita':'#A0522D',
   'yogi':'#6B8E6B','soul':'#8B7BA8','manual':'#9A8E82'
 };
+const bookUnits = {
+  '4a':'pg','hyw':'ch','sutras':'pg','chakra':'chakra','key':'pg',
+  'tao':'ch','pow':'ch','gita':'ch','yogi':'part','soul':'part','manual':'pg'
+};
+const bookTotals = {
+  '4a':138,'hyw':48,'sutras':280,'chakra':7,'key':230,
+  'tao':81,'pow':10,'gita':18,'yogi':3,'soul':5,'manual':1
+};
 
-// Update header label dynamically
-document.getElementById('current-week-label').textContent = `Currently on Week ${CURRENT_WEEK}`;
-document.getElementById('progress-label').textContent = `Week ${CURRENT_WEEK} of 14`;
-document.getElementById('progress-fill').style.width = `${(CURRENT_WEEK/14)*100}%`;
+// ── READING TRACKER TAB ────────────────────────────────────────────────────
+function buildReadingTracker() {
+  const rt = document.getElementById('reading-tracker');
+  rt.innerHTML = '';
+  const readData = load('reading-progress');
 
-// Build week ticks
-const ticksEl = document.getElementById('week-ticks');
-[1,2,3,'—',4,5,6,7,8,9,'—',10,11,12].forEach((t,i) => {
-  const el = document.createElement('span');
-  el.className = 'week-tick';
-  const wn = typeof t === 'number' ? t : null;
-  if(wn === CURRENT_WEEK) el.classList.add('active');
-  else if(wn && wn < CURRENT_WEEK) el.classList.add('done');
-  el.textContent = t === '—' ? 'off' : `W${t}`;
-  ticksEl.appendChild(el);
-});
+  const hdr = document.createElement('div');
+  hdr.style.cssText = 'font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;padding-bottom:6px;border-bottom:1px solid var(--stone);';
+  hdr.textContent = 'Your reading progress — tap to update where you are';
+  rt.appendChild(hdr);
 
-// Derive status dynamically from CURRENT_WEEK
+  books.filter(b => b.id !== 'manual').forEach(b => {
+    const current = readData[b.id] || 0;
+    const total = bookTotals[b.id];
+    const unit = bookUnits[b.id];
+    const pct = total > 1 ? Math.min(100, Math.round((current/total)*100)) : (current >= 1 ? 100 : 0);
+
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--warm-white);border:.5px solid var(--stone);border-radius:14px;padding:16px;margin-bottom:10px;';
+
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${bookColors[b.id]};flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:500;color:var(--umber);">${b.name}</div>
+          <div style="font-size:10px;color:var(--muted);">${b.author}</div>
+        </div>
+        <div style="font-size:18px;font-weight:600;color:${pct===100?'var(--sage-dk)':'var(--clay)'};">${pct}%</div>
+      </div>
+      <div style="height:8px;background:var(--stone);border-radius:4px;overflow:hidden;margin-bottom:10px;">
+        <div style="height:100%;border-radius:4px;background:linear-gradient(90deg,${bookColors[b.id]},var(--gold));width:${pct}%;transition:width .3s;"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:var(--muted);">I'm on ${unit}</span>
+        <input type="number" min="0" max="${total}" value="${current}" 
+          style="width:58px;border:1px solid var(--stone);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--umber);background:var(--warm-white);font-family:'DM Sans',sans-serif;"
+          onchange="updateReading('${b.id}', this.value, ${total}, this)"
+          oninput="updateReading('${b.id}', this.value, ${total}, this)">
+        <span style="font-size:11px;color:var(--muted);">of ${total} ${unit}${total>1?'s':''}</span>
+        ${pct===100?'<span style="font-size:10px;font-weight:600;color:var(--sage-dk);">✓ Done!</span>':''}
+      </div>`;
+    rt.appendChild(card);
+  });
+}
+
+function updateReading(bookId, val, total, inputEl) {
+  const num = Math.max(0, Math.min(total, parseInt(val)||0));
+  const readData = load('reading-progress');
+  readData[bookId] = num;
+  save('reading-progress', readData);
+  // Rebuild to update % and bar
+  buildReadingTracker();
+}
+
+buildReadingTracker();
+
+// ── WEEKS DATA ────────────────────────────────────────────────────────────
+const weeks = [
+  {n:1,date:'Aug 14',title:'Kickoff — Welcome to the training',special:'First Friday 7–9pm only. Receive your manual. Meet your cohort.',schedule:{fri:'7–9pm · Book review + discussion',sat:'Kickoff only',sun:'—'},reading:[{book:'4a',items:['Read The Four Agreements to page 23']},{book:'manual',items:['Review your training manual — read the full intro section']}]},
+  {n:2,date:'Aug 21',title:'Week 2 — Breath & Foundation',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 10:15–10:45am breakdown · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'4a',items:['Pages 25–46']},{book:'hyw',items:['Chapters 1–5']},{book:'sutras',items:['Sutras relevant to HYW ch1–5']},{book:'chakra',items:['Pages 1–27']},{book:'key',items:['Part One: Theory (full section)']}]},
+  {n:3,date:'Aug 28',title:'Week 3 — Yamas & Niyamas',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 6–11']},{book:'4a',items:['Pages 47–61']},{book:'sutras',items:['Sutras relevant to HYW ch6–11']},{book:'chakra',items:['Pages 29–47']},{book:'key',items:['Part Two: Practice — pages 35–120']},{book:'manual',items:['8 Limbs in Everyday Life — Yamas and Niyamas section']}]},
+  {n:4,date:'Sep 4',title:'Labor Day Weekend',off:true},
+  {n:5,date:'Sep 11',title:'Week 4 — Chakras 1 & 2',special:'Anatomy weekend is NEXT WEEK (Sep 18) — slides coming from Stacy.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'4a',items:['Pages 63–74']},{book:'hyw',items:['Chapters 12–20']},{book:'sutras',items:['Sutras relevant to HYW ch12–20']},{book:'chakra',items:['Chakras 1 + 2 (full chapters)']},{book:'key',items:['Part Two: pages 121 onwards']}]},
+  {n:6,date:'Sep 18',title:'Week 5 — Physical Anatomy Weekend',special:'Physical Anatomy Workshop this weekend — open to the public.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'4a',items:['Pages 75–122 · The New Dream chapter']},{book:'hyw',items:['Chapters 21–30']},{book:'sutras',items:['Sutras relevant to HYW ch21–30']},{book:'tao',items:['Chapters 1–16 + write your notes']},{book:'chakra',items:['Chakras 3 + 4']},{book:'key',items:['Index A']}],extra:[{label:"THIS WEEK'S INQUIRY — Choosing or Going Along With?",color:'#C4714E',items:['Identify at least 3 things you feel obligated to do or do for "reasons"','Rewrite each starting with "I CHOOSE to..."','Notice: do you experience them differently framed as a choice?','Journal about the difference in how they feel','Share your observations with your group']},{label:'DAILY HOMEWORK THIS WEEK',color:'#2D2B4E',items:['Journal 6× during the day — white & black seeds — review at bedtime (pg 266 HYW)','Meditation 20 minutes × 2 per day (morning + evening)','Personal practice and self-care daily','News fast + social media fast this week','Complaint observations — track every time you complain']},{label:'SELF-OBSERVATION PRACTICE',color:'#8FA98C',items:['Practice non-complaining — make clear requests or state requirements instead','Reflect: what does this have to do with impeccability and your word?','Self-observe and journal: gossip, lying, creating stories to justify your position, complaining, making clear requests, acknowledgment and gratitude']}]},
+  {n:7,date:'Sep 25',title:'Week 6 — Power of Now Begins',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 31–38']},{book:'sutras',items:['Sutras relevant to HYW ch31–38']},{book:'tao',items:['Chapters 17–32 + notes']},{book:'chakra',items:['Chakras 5 + 6']},{book:'pow',items:['Chapters 1–3']},{book:'gita',items:['Introduction, About the Translation, Chapter 1']},{book:'key',items:['Index B and C']}]},
+  {n:8,date:'Oct 2',title:'Week 7 — Energetic Anatomy Weekend',special:'Energetic Anatomy / Chakra Yoga Workshop this weekend.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 39–48 (final chapters)']},{book:'sutras',items:['Sutras relevant to HYW ch39–48']},{book:'tao',items:['Chapters 33–48 + notes']},{book:'chakra',items:['Chakra 7 — Crown']},{book:'pow',items:['Chapters 4–6']},{book:'gita',items:['Chapters 2–5']}]},
+  {n:9,date:'Oct 9',title:'Week 8 — Integrating the Chakras',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'tao',items:['Chapters 49–64 + notes']},{book:'chakra',items:['Integration section — synthesize all 7 chakras']},{book:'pow',items:['Chapters 7–9']},{book:'gita',items:['Chapters 6–12']},{book:'soul',items:['Introduction + Part 1']}]},
+  {n:10,date:'Oct 16',title:'Week 9 — Art of Assisting Workshop',special:"Craft of Connection Workshop. NOTE: Friday starts at 6pm this week (not 7pm).",schedule:{fri:'6–9pm · Book review + discussion (earlier start!)',sat:'9am–6pm training',sun:'1–7pm training'},reading:[{book:'tao',items:["Chapters 65–81 + notes — DONE with Tao!"]},{book:'pow',items:["Chapter 10 — DONE with Power of Now!"]},{book:'gita',items:["Chapters 13–18 — DONE with Bhagavad Gita!"]},{book:'soul',items:['Part 2']}]},
+  {n:11,date:'Oct 23',title:'Casa Alma Retreat',off:true,special:'Off-site retreat — Casa Alma. This is part of the training. Show up fully.'},
+  {n:12,date:'Oct 30',title:'Week 10 — The Yogi Entrepreneur',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'soul',items:['Part 3']},{book:'yogi',items:['Introduction + Parts 1 and 2']}]},
+  {n:13,date:'Nov 6',title:'Week 11 — Final Stretch',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'soul',items:['Part 4']},{book:'yogi',items:['Parts 2 and 3']}]},
+  {n:14,date:'Nov 13',title:'🎓 Graduation Weekend',special:'Graduation is Saturday Nov 13. Come ready to celebrate.',schedule:{fri:'7–9pm · Final discussion',sat:'Graduation ceremony',sun:'Rest. You did it.'},reading:[{book:'soul',items:['Part 5 — read slowly. This is the last one.']}]},
+];
+
 function getStatus(w) {
-  if(w.off) return 'off';
-  if(w.n === CURRENT_WEEK) return 'current';
-  if(w.n < CURRENT_WEEK) return 'done';
+  if (w.off) return 'off';
+  if (w.n < CURRENT_WEEK) return 'done';
   return 'future';
 }
 
-// Build nav
+function toggleComplete(weekNum) {
+  const completedData = load('ytt-completed');
+  completedData[weekNum] = !completedData[weekNum];
+  save('ytt-completed', completedData);
+  const done = completedData[weekNum];
+  const btn = document.getElementById(`comp-${weekNum}`);
+  const badge = btn.closest('.week-card-header').querySelector('.week-badge');
+  btn.textContent = done ? '✓ Done' : 'Mark done';
+  btn.style.border = `1px solid ${done?'var(--sage)':'var(--stone)'}`;
+  btn.style.background = done ? 'var(--sage-lt)' : 'transparent';
+  btn.style.color = done ? 'var(--sage-dk)' : 'var(--muted)';
+  badge.className = 'week-badge ' + (done ? 'badge-done' : 'badge-future');
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────────
 const nav = document.getElementById('week-nav');
 weeks.forEach(w => {
   const status = getStatus(w);
   const btn = document.createElement('button');
   btn.className = 'wn-btn';
-  if(status === 'current') btn.classList.add('current');
-  else if(status === 'done') btn.classList.add('done');
-  else if(w.off) btn.classList.add('off');
-  btn.textContent = w.off ? (w.n===4?'Sep 4 off':'Oct 23 off') : `${w.date}`;
-  btn.onclick = () => document.getElementById(`week-${w.n}`).scrollIntoView({behavior:'smooth'});
+  if (status === 'done') btn.classList.add('done');
+  else if (w.off) btn.classList.add('off');
+  btn.textContent = w.off ? (w.n===4?'Sep 4 off':'Oct 23 off') : w.date;
+  btn.onclick = () => {
+    switchTab('weeks', document.querySelectorAll('.tab-btn')[1]);
+    setTimeout(() => document.getElementById(`week-${w.n}`).scrollIntoView({behavior:'smooth'}), 50);
+  };
   nav.appendChild(btn);
 });
 
-// Build week cards
+// ── WEEK CARDS ────────────────────────────────────────────────────────────
 const container = document.getElementById('weeks-container');
 let taskCounter = 0;
+const taskData = load('ytt-tasks');
 
 weeks.forEach(w => {
   const status = getStatus(w);
@@ -615,38 +569,33 @@ weeks.forEach(w => {
 
   const card = document.createElement('div');
   card.className = 'week-card';
-  if(status === 'current') card.classList.add('current-week');
-  if(w.off && !w.special) card.classList.add('off-week');
+  if (w.off && !w.special) card.classList.add('off-week');
 
-  // Badge
-  let badgeClass = 'badge-future';
-  let badgeText = `W${w.n}`;
-  let pillText = 'upcoming';
-  let pillClass = 'pill-future';
-  if(status === 'done') { badgeClass='badge-done'; pillText='✓ done'; pillClass='pill-done'; }
-  if(status === 'current') { badgeClass='badge-current'; pillText='← you are here'; pillClass='pill-current'; }
-  if(w.off) { badgeClass='badge-off'; pillText='off'; pillClass='pill-off'; }
+  let badgeClass = 'badge-future', pillText = 'upcoming', pillClass = 'pill-future';
+  if (status === 'done') { badgeClass='badge-done'; pillText='✓ done'; pillClass='pill-done'; }
+  if (w.off)             { badgeClass='badge-off';  pillText='off';    pillClass='pill-off'; }
 
-  // Header
+  const completedData = load('ytt-completed');
+  const isCompleted = completedData[w.n] || false;
+
   const hdr = document.createElement('div');
   hdr.className = 'week-card-header';
   hdr.innerHTML = `
     <div class="week-left">
-      <div class="week-badge ${badgeClass}">${badgeText}</div>
+      <div class="week-badge ${isCompleted ? 'badge-done' : badgeClass}">W${w.n}</div>
       <div class="week-meta">
         <div class="week-title">${w.title}</div>
         <div class="week-date">${w.date}</div>
       </div>
     </div>
     <div class="week-right">
-      <span class="week-progress-pill ${pillClass}">${pillText}</span>
+      <button class="complete-btn" id="comp-${w.n}" onclick="event.stopPropagation();toggleComplete(${w.n})" style="padding:4px 10px;border-radius:12px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid ${isCompleted?'var(--sage)':'var(--stone)'};background:${isCompleted?'var(--sage-lt)':'transparent'};color:${isCompleted?'var(--sage-dk)':'var(--muted)'};">${isCompleted?'✓ Done':'Mark done'}</button>
       <span class="chevron" id="chev-${w.n}">▼</span>
     </div>`;
 
   const body = document.createElement('div');
   body.className = 'week-body';
   body.id = `body-${w.n}`;
-  if(w.status === 'current') { body.classList.add('open'); document.getElementById(`chev-${w.n}`) || 0; }
 
   hdr.onclick = () => {
     const b = document.getElementById(`body-${w.n}`);
@@ -655,95 +604,71 @@ weeks.forEach(w => {
     c.style.transform = open ? 'rotate(180deg)' : '';
   };
 
-  // Body content
-  if(w.off) {
+  if (w.off) {
     const msg = document.createElement('div');
     msg.className = 'off-message';
-    msg.innerHTML = w.special
-      ? `🌿 ${w.special}`
-      : (w.n === 4 ? '🏖️ Labor Day weekend — fully off. Rest, restore, and enjoy.' : '');
+    msg.textContent = w.special || (w.n===4 ? '🏖 Labor Day weekend — fully off.' : '');
     body.appendChild(msg);
   } else {
-    // Special note
-    if(w.special) {
+    if (w.special) {
       const sp = document.createElement('div');
       sp.className = 'special-badge';
-      sp.innerHTML = `<strong>✦ Note:</strong> ${w.special}`;
+      sp.style.margin = '14px 18px';
+      sp.textContent = w.special;
       body.appendChild(sp);
     }
 
     // Schedule
-    if(w.schedule) {
-      const strip = document.createElement('div');
-      strip.className = 'schedule-strip';
-      [['Friday', w.schedule.fri],['Saturday', w.schedule.sat],['Sunday', w.schedule.sun]].forEach(([day,time]) => {
-        const d = document.createElement('div'); d.className = 'sched-day';
-        d.innerHTML = `<div class="sched-day-name">${day}</div><div class="sched-day-time">${time||'—'}</div>`;
-        strip.appendChild(d);
-      });
-      body.appendChild(strip);
-    }
-
-    // Weekly practices strip
-    if(!w.off) {
-      const ws = document.createElement('div');
-      ws.className = 'weekly-strip';
-      ws.innerHTML = `<div class="weekly-strip-label">Weekly practices</div>`;
-      const weeklyTasks = [
-        { id:`wk-checkin-${w.n}`, text:'Group check-in — connect with your cohort this week' },
-        { id:`wk-journal-${w.n}`, text:'Journal — at least one entry reflecting on this week\'s reading or practice' },
-        { id:`wk-flow-${w.n}`,    text:'Personal flow — practice on your own at least once outside of class' },
-      ];
-      weeklyTasks.forEach(t => {
-        const ti = document.createElement('div'); ti.className='task-item'; ti.id=t.id;
-        ti.innerHTML=`<div class="task-cb" id="cb-${t.id}"></div><span class="task-txt">${t.text}</span>`;
-        ti.onclick=()=>{
-          const cb=document.getElementById(`cb-${t.id}`);
-          const txt=ti.querySelector('.task-txt');
-          cb.classList.toggle('done'); txt.classList.toggle('done');
-          cb.textContent=cb.classList.contains('done')?'✓':'';
-          const saved=JSON.parse(localStorage.getItem('ytt-tasks')||'{}');
-          saved[t.id]=cb.classList.contains('done');
-          localStorage.setItem('ytt-tasks',JSON.stringify(saved));
-        };
-        ws.appendChild(ti);
-      });
-      body.appendChild(ws);
-    }
+    const strip = document.createElement('div');
+    strip.className = 'schedule-strip';
+    [['Fri', w.schedule.fri],['Sat', w.schedule.sat],['Sun', w.schedule.sun]].forEach(([d,t]) => {
+      const day = document.createElement('div'); day.className = 'sched-day';
+      day.innerHTML = `<div class="sched-day-name">${d}</div><div class="sched-day-time">${t||'—'}</div>`;
+      strip.appendChild(day);
+    });
+    body.appendChild(strip);
 
     // Reading
-    if(w.reading && w.reading.length) {
+    if (w.reading && w.reading.length) {
       const rs = document.createElement('div');
       rs.className = 'reading-section';
-
-      const rlabel = document.createElement('div');
-      rlabel.style.cssText = 'font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;';
-      rlabel.textContent = 'Reading due for this weekend';
-      rs.appendChild(rlabel);
+      const rl = document.createElement('div');
+      rl.style.cssText = 'font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;';
+      rl.textContent = 'Reading due this weekend';
+      rs.appendChild(rl);
 
       w.reading.forEach(rb => {
-        const b = books.find(b=>b.id===rb.book);
-        if(!b) return;
+        const b = books.find(b => b.id === rb.book);
+        if (!b) return;
         const bookEl = document.createElement('div'); bookEl.className = 'reading-book';
         const bh = document.createElement('div'); bh.className = 'book-header';
         bh.innerHTML = `<div class="book-dot ${b.dot}" style="background:${bookColors[rb.book]||'#ccc'}"></div><div class="book-name">${b.abbr} — ${b.name}</div>`;
         bookEl.appendChild(bh);
 
+        // Reading progress bar inline
+        const readData = load('reading-progress');
+        const cur = readData[rb.book] || 0;
+        const tot = bookTotals[rb.book];
+        const pct = tot > 1 ? Math.min(100, Math.round((cur/tot)*100)) : 0;
+        if (tot > 1) {
+          const pb = document.createElement('div');
+          pb.style.cssText = 'margin-left:16px;margin-bottom:6px;';
+          pb.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:3px;"><span>${bookUnits[rb.book]} ${cur} of ${tot}</span><span style="color:var(--clay);font-weight:600;">${pct}%</span></div><div style="height:4px;background:var(--stone);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${bookColors[rb.book]};border-radius:2px;"></div></div>`;
+          bookEl.appendChild(pb);
+        }
+
         const tl = document.createElement('div'); tl.className = 'task-list';
         rb.items.forEach(item => {
           const tid = `task-${taskCounter++}`;
           const ti = document.createElement('div'); ti.className = 'task-item'; ti.id = tid;
-          ti.innerHTML = `<div class="task-cb" id="cb-${tid}"></div><span class="task-txt">${item}</span>`;
+          const isDone = taskData[tid];
+          ti.innerHTML = `<div class="task-cb${isDone?' done':''}" id="cb-${tid}">${isDone?'✓':''}</div><span class="task-txt${isDone?' done':''}">${item}</span>`;
           ti.onclick = () => {
             const cb = document.getElementById(`cb-${tid}`);
             const txt = ti.querySelector('.task-txt');
-            cb.classList.toggle('done');
-            txt.classList.toggle('done');
+            cb.classList.toggle('done'); txt.classList.toggle('done');
             cb.textContent = cb.classList.contains('done') ? '✓' : '';
-            // Save to localStorage
-            const saved = JSON.parse(localStorage.getItem('ytt-tasks')||'{}');
-            saved[tid] = cb.classList.contains('done');
-            localStorage.setItem('ytt-tasks', JSON.stringify(saved));
+            const td = load('ytt-tasks'); td[tid] = cb.classList.contains('done'); save('ytt-tasks', td);
           };
           tl.appendChild(ti);
         });
@@ -753,69 +678,62 @@ weeks.forEach(w => {
       body.appendChild(rs);
     }
 
-    // Extra homework sections (inquiry, daily, self-observation)
-    if(w.extra && w.extra.length) {
+    // Extra homework
+    if (w.extra) {
       w.extra.forEach(ex => {
         const exEl = document.createElement('div');
-        exEl.style.cssText = `border-top:0.5px solid var(--stone);`;
-        const exLabel = document.createElement('div');
-        exLabel.style.cssText = `font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:10px 18px 4px;color:${ex.color};`;
-        exLabel.textContent = ex.label;
-        exEl.appendChild(exLabel);
+        exEl.style.cssText = 'border-top:.5px solid var(--stone);';
+        const lbl = document.createElement('div');
+        lbl.style.cssText = `font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:10px 18px 4px;color:${ex.color};`;
+        lbl.textContent = ex.label;
+        exEl.appendChild(lbl);
         ex.items.forEach(item => {
           const tid = `task-${taskCounter++}`;
-          const ti = document.createElement('div'); ti.className='task-item'; ti.id=tid;
-          ti.style.cssText = 'padding:4px 18px;';
-          ti.innerHTML = `<div class="task-cb" id="cb-${tid}"></div><span class="task-txt">${item}</span>`;
-          ti.onclick = () => {
-            const cb = document.getElementById(`cb-${tid}`);
-            const txt = ti.querySelector('.task-txt');
-            cb.classList.toggle('done'); txt.classList.toggle('done');
-            cb.textContent = cb.classList.contains('done') ? '✓' : '';
-            const saved = JSON.parse(localStorage.getItem('ytt-tasks')||'{}');
-            saved[tid] = cb.classList.contains('done');
-            localStorage.setItem('ytt-tasks', JSON.stringify(saved));
+          const isDone = taskData[tid];
+          const ti = document.createElement('div'); ti.className='task-item'; ti.style.cssText='padding:4px 18px;'; ti.id=tid;
+          ti.innerHTML=`<div class="task-cb${isDone?' done':''}" id="cb-${tid}">${isDone?'✓':''}</div><span class="task-txt${isDone?' done':''}">${item}</span>`;
+          ti.onclick=()=>{
+            const cb=document.getElementById(`cb-${tid}`); const txt=ti.querySelector('.task-txt');
+            cb.classList.toggle('done'); txt.classList.toggle('done'); cb.textContent=cb.classList.contains('done')?'✓':'';
+            const td=load('ytt-tasks'); td[tid]=cb.classList.contains('done'); save('ytt-tasks',td);
           };
           exEl.appendChild(ti);
         });
         body.appendChild(exEl);
       });
     }
+
+    // Weekly strip
+    const ws = document.createElement('div'); ws.className='weekly-strip';
+    ws.innerHTML=`<div class="weekly-strip-label">Weekly practices</div>`;
+    [{id:`wk-checkin-${w.n}`,text:'Group check-in — connect with your cohort this week'},
+     {id:`wk-journal-${w.n}`,text:'Journal — at least one entry reflecting on this week\'s reading or practice'},
+     {id:`wk-jip-${w.n}`,text:'JIP daily (6 days, one rest day) — Journey Into Power sequence'},
+    ].forEach(t => {
+      const isDone = taskData[t.id];
+      const ti=document.createElement('div'); ti.className='task-item'; ti.id=t.id;
+      ti.innerHTML=`<div class="task-cb${isDone?' done':''}" id="cb-${t.id}">${isDone?'✓':''}</div><span class="task-txt${isDone?' done':''}">${t.text}</span>`;
+      ti.onclick=()=>{
+        const cb=document.getElementById(`cb-${t.id}`); const txt=ti.querySelector('.task-txt');
+        cb.classList.toggle('done'); txt.classList.toggle('done'); cb.textContent=cb.classList.contains('done')?'✓':'';
+        const td=load('ytt-tasks'); td[t.id]=cb.classList.contains('done'); save('ytt-tasks',td);
+      };
+      ws.appendChild(ti);
+    });
+    body.appendChild(ws);
   }
 
   card.appendChild(hdr);
   card.appendChild(body);
   sec.appendChild(card);
   container.appendChild(sec);
-
-  // Open current week body and fix chevron
-  if(status === 'current') {
-    body.classList.add('open');
-    setTimeout(() => {
-      const chev = document.getElementById(`chev-${w.n}`);
-      if(chev) chev.style.transform = 'rotate(180deg)';
-    }, 10);
-  }
 });
 
-// Restore saved checkboxes
-const saved = JSON.parse(localStorage.getItem('ytt-tasks')||'{}');
-Object.entries(saved).forEach(([tid, done]) => {
-  if(done) {
-    const cb = document.getElementById(`cb-${tid}`);
-    const item = document.getElementById(tid);
-    if(cb && item) {
-      cb.classList.add('done'); cb.textContent = '✓';
-      item.querySelector('.task-txt')?.classList.add('done');
-    }
-  }
-});
-
-// Build book key
+// ── BOOK KEY ──────────────────────────────────────────────────────────────
 const bkGrid = document.getElementById('book-key');
 books.forEach(b => {
-  const el = document.createElement('div'); el.className = 'bk-item';
-  el.innerHTML = `<div class="bk-dot" style="background:${bookColors[b.id]||'#ccc'}"></div><div class="bk-text"><span class="bk-abbr">${b.abbr}</span> — ${b.name}<br><span style="font-size:10px;color:var(--muted)">${b.author}</span></div>`;
+  const el=document.createElement('div'); el.className='bk-item';
+  el.innerHTML=`<div class="bk-dot" style="background:${bookColors[b.id]||'#ccc'}"></div><div class="bk-text"><span class="bk-abbr">${b.abbr}</span> — ${b.name}<br><span style="font-size:10px;color:var(--muted)">${b.author}</span></div>`;
   bkGrid.appendChild(el);
 });
 </script>
