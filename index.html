@@ -223,6 +223,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--parchment); color: 
 .book-soul   { background: #8B7BA8; }
 .book-manual { background: #9A8E82; }
 
+/* EXTRA HOMEWORK */
+.extra-section { border-top: 0.5px solid var(--stone); }
+.extra-label { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 10px 18px 4px; }
+
 /* DAILY PRACTICES */
 .daily-section {
   margin-top: 32px;
@@ -281,7 +285,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--parchment); color: 
 <div class="header">
   <div class="header-eyebrow">Authentic Living = Powerful Life · Baptiste Vinyasa</div>
   <h1>Your <em>homework</em><br>schedule</h1>
-  <p class="header-sub">V12 Dallas · with Stacy · Aug 14 – Nov 14, 2026 · You are on Week 2</p>
+  <p class="header-sub">V12 Dallas · with Stacy · Aug 14 – Nov 14, 2026 · <span id="current-week-label"></span></p>
 </div>
 
 <div class="progress-wrap">
@@ -345,7 +349,26 @@ body { font-family: 'DM Sans', sans-serif; background: var(--parchment); color: 
 </div>
 
 <script>
-const CURRENT_WEEK = 2;
+// Auto-calculate current week based on today's date
+function getCurrentWeek() {
+  const today = new Date();
+  const schedule = [
+    { n:1,  d:'2026-08-14' }, { n:2,  d:'2026-08-21' },
+    { n:3,  d:'2026-08-28' }, { n:4,  d:'2026-09-04' },
+    { n:5,  d:'2026-09-11' }, { n:6,  d:'2026-09-18' },
+    { n:7,  d:'2026-09-25' }, { n:8,  d:'2026-10-02' },
+    { n:9,  d:'2026-10-09' }, { n:10, d:'2026-10-16' },
+    { n:11, d:'2026-10-23' }, { n:12, d:'2026-10-30' },
+    { n:13, d:'2026-11-06' }, { n:14, d:'2026-11-13' },
+  ];
+  let current = 1;
+  for (const w of schedule) {
+    if (today >= new Date(w.d)) current = w.n;
+    else break;
+  }
+  return current;
+}
+const CURRENT_WEEK = getCurrentWeek();
 
 const books = [
   { id:'4a',     dot:'book-4a',     abbr:'4A',      name:'The Four Agreements',              author:'Don Miguel Ruiz' },
@@ -372,7 +395,7 @@ const weeks = [
     ]
   },
   {
-    n:2, date:'Aug 21', title:'Week 2 — You are here', status:'current',
+    n:2, date:'Aug 21', title:'Week 2 — Breath & Foundation', status:'future',
     schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 10:15–10:45am breakdown · 1–6:30pm training', sun:'1–6:30pm training' },
     reading:[
       { book:'4a',     items:['Pages 25–46'] },
@@ -400,13 +423,47 @@ const weeks = [
   },
   {
     n:5, date:'Sep 11', title:'Week 4 — Chakras 1 & 2', status:'future',
+    special:'ANATOMY WEEKEND IS NEXT WEEK (Sep 18) — slides coming from Stacy.',
     schedule:{ fri:'7–9pm · Book review + discussion', sat:'9–10:15am class · 1–6:30pm training', sun:'1–6:30pm training' },
     reading:[
       { book:'4a',     items:['Pages 63–74'] },
-      { book:'hyw',    items:['Chapters 12–20'] },
+      { book:'hyw',    items:['Chapters 12–20', 'Journal 6 times per day — good and not-so-good actions — review at bedtime (pg 266 in HYW)'] },
       { book:'sutras', items:['Sutras relevant to HYW ch12–20'] },
       { book:'chakra', items:['Chakras 1 + 2 (full chapters)'] },
       { book:'key',    items:['Part Two: pages 121 onwards'] },
+    ],
+    extra:[
+      {
+        label:'THIS WEEK\'S INQUIRY — Choosing or Going Along With?',
+        color:'#C4714E',
+        items:[
+          'Identify at least 3 things in your life you feel obligated to do or do for "reasons"',
+          'Rewrite each one starting with "I CHOOSE to..." instead',
+          'Notice: do you experience them differently when framed as a choice?',
+          'Journal about the difference in how they feel',
+          'Share your observations with your group',
+        ]
+      },
+      {
+        label:'DAILY HOMEWORK THIS WEEK',
+        color:'#2D2B4E',
+        items:[
+          'Journal 6 times during the day — both good and not-so-good actions — review at bedtime (pg 266 HYW)',
+          'Meditation 20 minutes × 2 per day (morning + evening)',
+          'Personal practice and self-care daily',
+          'News fast + social media fast this week',
+          'Complaint observations — track every time you complain',
+        ]
+      },
+      {
+        label:'SELF-OBSERVATION PRACTICE',
+        color:'#8FA98C',
+        items:[
+          'Observe yourself: practice non-complaining and making clear requests instead',
+          'Reflect: what does this have to do with impeccability and your word?',
+          'Self-observe and journal about: gossip, lying, creating stories to justify your position, complaining, making clear requests, acknowledgment and gratitude',
+        ]
+      },
     ]
   },
   {
@@ -507,6 +564,11 @@ const bookColors = {
   'yogi':'#6B8E6B','soul':'#8B7BA8','manual':'#9A8E82'
 };
 
+// Update header label dynamically
+document.getElementById('current-week-label').textContent = `Currently on Week ${CURRENT_WEEK}`;
+document.getElementById('progress-label').textContent = `Week ${CURRENT_WEEK} of 14`;
+document.getElementById('progress-fill').style.width = `${(CURRENT_WEEK/14)*100}%`;
+
 // Build week ticks
 const ticksEl = document.getElementById('week-ticks');
 [1,2,3,'—',4,5,6,7,8,9,'—',10,11,12].forEach((t,i) => {
@@ -519,13 +581,22 @@ const ticksEl = document.getElementById('week-ticks');
   ticksEl.appendChild(el);
 });
 
+// Derive status dynamically from CURRENT_WEEK
+function getStatus(w) {
+  if(w.off) return 'off';
+  if(w.n === CURRENT_WEEK) return 'current';
+  if(w.n < CURRENT_WEEK) return 'done';
+  return 'future';
+}
+
 // Build nav
 const nav = document.getElementById('week-nav');
 weeks.forEach(w => {
+  const status = getStatus(w);
   const btn = document.createElement('button');
   btn.className = 'wn-btn';
-  if(w.status === 'current') btn.classList.add('current');
-  else if(w.status === 'done') btn.classList.add('done');
+  if(status === 'current') btn.classList.add('current');
+  else if(status === 'done') btn.classList.add('done');
   else if(w.off) btn.classList.add('off');
   btn.textContent = w.off ? (w.n===4?'Sep 4 off':'Oct 23 off') : `${w.date}`;
   btn.onclick = () => document.getElementById(`week-${w.n}`).scrollIntoView({behavior:'smooth'});
@@ -537,13 +608,14 @@ const container = document.getElementById('weeks-container');
 let taskCounter = 0;
 
 weeks.forEach(w => {
+  const status = getStatus(w);
   const sec = document.createElement('div');
   sec.className = 'week-section';
   sec.id = `week-${w.n}`;
 
   const card = document.createElement('div');
   card.className = 'week-card';
-  if(w.status === 'current') card.classList.add('current-week');
+  if(status === 'current') card.classList.add('current-week');
   if(w.off && !w.special) card.classList.add('off-week');
 
   // Badge
@@ -551,8 +623,8 @@ weeks.forEach(w => {
   let badgeText = `W${w.n}`;
   let pillText = 'upcoming';
   let pillClass = 'pill-future';
-  if(w.status === 'done') { badgeClass='badge-done'; pillText='✓ done'; pillClass='pill-done'; }
-  if(w.status === 'current') { badgeClass='badge-current'; pillText='← you are here'; pillClass='pill-current'; }
+  if(status === 'done') { badgeClass='badge-done'; pillText='✓ done'; pillClass='pill-done'; }
+  if(status === 'current') { badgeClass='badge-current'; pillText='← you are here'; pillClass='pill-current'; }
   if(w.off) { badgeClass='badge-off'; pillText='off'; pillClass='pill-off'; }
 
   // Header
@@ -680,6 +752,35 @@ weeks.forEach(w => {
       });
       body.appendChild(rs);
     }
+
+    // Extra homework sections (inquiry, daily, self-observation)
+    if(w.extra && w.extra.length) {
+      w.extra.forEach(ex => {
+        const exEl = document.createElement('div');
+        exEl.style.cssText = `border-top:0.5px solid var(--stone);`;
+        const exLabel = document.createElement('div');
+        exLabel.style.cssText = `font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:10px 18px 4px;color:${ex.color};`;
+        exLabel.textContent = ex.label;
+        exEl.appendChild(exLabel);
+        ex.items.forEach(item => {
+          const tid = `task-${taskCounter++}`;
+          const ti = document.createElement('div'); ti.className='task-item'; ti.id=tid;
+          ti.style.cssText = 'padding:4px 18px;';
+          ti.innerHTML = `<div class="task-cb" id="cb-${tid}"></div><span class="task-txt">${item}</span>`;
+          ti.onclick = () => {
+            const cb = document.getElementById(`cb-${tid}`);
+            const txt = ti.querySelector('.task-txt');
+            cb.classList.toggle('done'); txt.classList.toggle('done');
+            cb.textContent = cb.classList.contains('done') ? '✓' : '';
+            const saved = JSON.parse(localStorage.getItem('ytt-tasks')||'{}');
+            saved[tid] = cb.classList.contains('done');
+            localStorage.setItem('ytt-tasks', JSON.stringify(saved));
+          };
+          exEl.appendChild(ti);
+        });
+        body.appendChild(exEl);
+      });
+    }
   }
 
   card.appendChild(hdr);
@@ -688,7 +789,7 @@ weeks.forEach(w => {
   container.appendChild(sec);
 
   // Open current week body and fix chevron
-  if(w.status === 'current') {
+  if(status === 'current') {
     body.classList.add('open');
     setTimeout(() => {
       const chev = document.getElementById(`chev-${w.n}`);
