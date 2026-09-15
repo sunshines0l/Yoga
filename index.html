@@ -170,20 +170,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--um
   <!-- TODAY TAB -->
   <div class="tab-pane active" id="tab-today">
     <div class="today-header">
-      <div>
-        <div class="today-date-label">Today</div>
-        <div class="today-date" id="today-date-display"></div>
-      </div>
-      <div class="today-progress-wrap">
-        <div class="today-progress-label" style="font-size:9px;color:#b0a090;margin-bottom:4px;text-align:right;">done today</div>
-        <div class="today-progress-ring">
-          <svg class="today-ring-svg" width="44" height="44" viewBox="0 0 44 44">
-            <circle class="today-ring-bg" cx="22" cy="22" r="18"/>
-            <circle class="today-ring-fill" id="today-ring" cx="22" cy="22" r="18" stroke-dasharray="113" stroke-dashoffset="113"/>
-          </svg>
-          <div class="today-ring-text" id="today-ring-pct">0%</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="changeDay(-1)" style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:transparent;color:#b0a090;font-size:14px;cursor:pointer;">‹</button>
+        <div>
+          <div class="today-date-label" id="today-label">Today</div>
+          <div class="today-date" id="today-date-display"></div>
         </div>
       </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="today-progress-wrap">
+          <div style="font-size:9px;color:#b0a090;margin-bottom:4px;text-align:right;">done</div>
+          <div class="today-progress-ring">
+            <svg class="today-ring-svg" width="44" height="44" viewBox="0 0 44 44">
+              <circle class="today-ring-bg" cx="22" cy="22" r="18"/>
+              <circle class="today-ring-fill" id="today-ring" cx="22" cy="22" r="18" stroke-dasharray="113" stroke-dashoffset="113"/>
+            </svg>
+            <div class="today-ring-text" id="today-ring-pct">0%</div>
+          </div>
+        </div>
+        <button onclick="changeDay(1)" id="next-day-btn" style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:transparent;color:#b0a090;font-size:14px;cursor:pointer;">›</button>
+      </div>
+    </div>
+
+    <!-- WEEK STRIP -->
+    <div style="background:var(--warm-white);border:.5px solid var(--stone);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">This week at a glance</div>
+      <div id="week-strip" style="display:flex;gap:6px;justify-content:space-between;"></div>
     </div>
 
     <div class="today-section-label">Morning</div>
@@ -299,7 +311,9 @@ function getCurrentWeek() {
   return current;
 }
 const CURRENT_WEEK = getCurrentWeek();
-const TODAY_KEY = new Date().toISOString().slice(0,10);
+let viewDate = new Date();
+function dateKey(d) { return d.toISOString().slice(0,10); }
+let TODAY_KEY = dateKey(viewDate);
 
 // ── STORAGE ──────────────────────────────────────────────────────────────
 function load(key) { try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch { return {}; } }
@@ -315,9 +329,81 @@ function switchTab(id, btn) {
 
 // ── TODAY DATE ────────────────────────────────────────────────────────────
 const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const dayShort = ['S','M','T','W','T','F','S'];
 const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const now = new Date();
-document.getElementById('today-date-display').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+
+function isToday(d) { return dateKey(d) === dateKey(new Date()); }
+
+function renderDate() {
+  TODAY_KEY = dateKey(viewDate);
+  document.getElementById('today-date-display').textContent =
+    `${days[viewDate.getDay()]}, ${months[viewDate.getMonth()]} ${viewDate.getDate()}`;
+  document.getElementById('today-label').textContent = isToday(viewDate) ? 'Today' : 'Viewing';
+  // Hide next button if viewing today (can't check future)
+  const nextBtn = document.getElementById('next-day-btn');
+  nextBtn.style.opacity = isToday(viewDate) ? '0.3' : '1';
+  nextBtn.style.pointerEvents = isToday(viewDate) ? 'none' : 'auto';
+  restoreDayState();
+  buildWeekStrip();
+}
+
+function changeDay(delta) {
+  const newDate = new Date(viewDate);
+  newDate.setDate(newDate.getDate() + delta);
+  if (newDate > new Date()) return; // no future days
+  viewDate = newDate;
+  renderDate();
+}
+
+function restoreDayState() {
+  const d = load('daily-'+TODAY_KEY);
+  DAILY_IDS.forEach(id => {
+    const row = document.getElementById('dt-'+id);
+    const check = document.getElementById('dc-'+id);
+    const name = document.getElementById('dn-'+id);
+    if (!row) return;
+    if (d[id]) {
+      row.classList.add('done-row'); check.classList.add('done'); check.textContent='✓'; name.classList.add('done');
+    } else {
+      row.classList.remove('done-row'); check.classList.remove('done'); check.textContent=DAILY_EMOJIS[id]; name.classList.remove('done');
+    }
+  });
+  buildJournalDots(d['journal-count'] || 0);
+  updateRing();
+}
+
+function dayPct(key) {
+  const d = load('daily-'+key);
+  let done = 0;
+  DAILY_IDS.forEach(id => { if (d[id]) done++; });
+  if ((d['journal-count']||0) >= 6) done++;
+  return Math.round((done/(DAILY_IDS.length+1))*100);
+}
+
+function buildWeekStrip() {
+  const strip = document.getElementById('week-strip');
+  strip.innerHTML = '';
+  // Get Monday of the viewed week
+  const start = new Date(viewDate);
+  const dow = start.getDay();
+  start.setDate(start.getDate() - (dow === 0 ? 6 : dow - 1)); // Monday start
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    const key = dateKey(d);
+    const pct = dayPct(key);
+    const future = d > new Date();
+    const viewing = key === TODAY_KEY;
+    const el = document.createElement('div');
+    el.style.cssText = `flex:1;text-align:center;cursor:${future?'default':'pointer'};opacity:${future?'0.3':'1'};`;
+    const ringColor = pct === 100 ? 'var(--sage)' : pct > 0 ? 'var(--gold)' : 'var(--stone)';
+    el.innerHTML = `
+      <div style="font-size:9px;color:var(--muted);margin-bottom:4px;">${dayShort[d.getDay()]}</div>
+      <div style="width:28px;height:28px;border-radius:50%;margin:0 auto;border:2px solid ${ringColor};background:${pct===100?'var(--sage)':pct>0?'var(--gold-lt)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:${pct===100?'white':'var(--muted)'};${viewing?'box-shadow:0 0 0 2px var(--clay);':''}">${pct===100?'✓':d.getDate()}</div>`;
+    if (!future) el.onclick = () => { viewDate = d; renderDate(); };
+    strip.appendChild(el);
+  }
+}
 
 // ── HEADER ────────────────────────────────────────────────────────────────
 document.getElementById('current-week-label').textContent = `Week ${CURRENT_WEEK} of 14`;
@@ -343,46 +429,26 @@ function updateRing() {
 }
 
 function toggleDaily(id) {
-  const todayData = load('daily-'+TODAY_KEY);
-  todayData[id] = !todayData[id];
-  save('daily-'+TODAY_KEY, todayData);
+  const d = load('daily-'+TODAY_KEY);
+  d[id] = !d[id];
+  save('daily-'+TODAY_KEY, d);
   const row = document.getElementById('dt-'+id);
   const check = document.getElementById('dc-'+id);
   const name = document.getElementById('dn-'+id);
-  if (todayData[id]) {
-    row.classList.add('done-row');
-    check.classList.add('done');
-    check.textContent = '✓';
-    name.classList.add('done');
+  if (d[id]) {
+    row.classList.add('done-row'); check.classList.add('done'); check.textContent='✓'; name.classList.add('done');
   } else {
-    row.classList.remove('done-row');
-    check.classList.remove('done');
-    check.textContent = DAILY_EMOJIS[id];
-    name.classList.remove('done');
+    row.classList.remove('done-row'); check.classList.remove('done'); check.textContent=DAILY_EMOJIS[id]; name.classList.remove('done');
   }
   updateRing();
+  buildWeekStrip();
 }
 
 function resetToday() {
   save('daily-'+TODAY_KEY, {});
-  DAILY_IDS.forEach(id => {
-    document.getElementById('dt-'+id).classList.remove('done-row');
-    const c = document.getElementById('dc-'+id); c.classList.remove('done'); c.textContent = DAILY_EMOJIS[id];
-    document.getElementById('dn-'+id).classList.remove('done');
-  });
-  buildJournalDots(0);
-  updateRing();
+  restoreDayState();
+  buildWeekStrip();
 }
-
-// Restore daily state
-const todayData = load('daily-'+TODAY_KEY);
-DAILY_IDS.forEach(id => {
-  if (todayData[id]) {
-    document.getElementById('dt-'+id).classList.add('done-row');
-    const c = document.getElementById('dc-'+id); c.classList.add('done'); c.textContent = '✓';
-    document.getElementById('dn-'+id).classList.add('done');
-  }
-});
 
 // ── JOURNAL DOTS ──────────────────────────────────────────────────────────
 function buildJournalDots(count) {
@@ -399,12 +465,14 @@ function buildJournalDots(count) {
       save('daily-'+TODAY_KEY, d);
       buildJournalDots(newCount);
       updateRing();
+      buildWeekStrip();
     };
     wrap.appendChild(dot);
   }
 }
-buildJournalDots(todayData['journal-count'] || 0);
-updateRing();
+
+// Initialize the day view
+renderDate();
 
 // ── WEEK TICKS ────────────────────────────────────────────────────────────
 const ticksEl = document.getElementById('week-ticks');
