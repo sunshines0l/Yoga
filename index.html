@@ -222,9 +222,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--um
 
     <div class="today-section-label">Throughout the day — White &amp; Black Seed Journal (pg 266 HYW)</div>
     <div class="journal-counter" id="journal-counter">
-      <div class="jc-label">Tap each dot when you journal (aim for 6× — before meals + bedtime)</div>
+      <div style="background:var(--gold-lt);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:14px;">
+        <div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7a5200;margin-bottom:8px;">How this practice works</div>
+        <div style="font-size:11px;color:var(--umber);line-height:1.7;">
+          Pause <strong>6 times</strong> through the day — roughly every 2–3 hours, ideally before meals. Each time, write down two things in a small notebook:<br><br>
+          <strong>1. One white seed</strong> — the best thing you did in the last few hours. Something honest, kind, or aligned with your values. It can be tiny: "I listened without interrupting." "I didn't complain when I wanted to."<br><br>
+          <strong>2. One black seed</strong> — the one worst thing. A small lie, a complaint, a moment you weren't your best self. Just one. Be honest, not harsh.<br><br>
+          <strong>At bedtime:</strong> read the whole list. Take joy in the white seeds. For the black ones — no self-punishment. Just make a quiet plan to do better tomorrow morning.<br><br>
+          <em style="color:var(--muted);">The book says 3× a day is the modern version. The ancient masters did 6×. Stacy assigned 6.</em>
+        </div>
+      </div>
+      <div class="jc-label">Tap each dot when you complete a check-in</div>
       <div class="jc-dots" id="jc-dots"></div>
-      <div class="jc-desc">Ancient masters: white seed = good action in last few hours · black seed = not-so-good action. Review all at bedtime. Plan to do better tomorrow.</div>
     </div>
 
     <div class="today-section-label">Evening</div>
@@ -339,10 +348,6 @@ function renderDate() {
   document.getElementById('today-date-display').textContent =
     `${days[viewDate.getDay()]}, ${months[viewDate.getMonth()]} ${viewDate.getDate()}`;
   document.getElementById('today-label').textContent = isToday(viewDate) ? 'Today' : 'Viewing';
-  // Hide next button if viewing today (can't check future)
-  const nextBtn = document.getElementById('next-day-btn');
-  nextBtn.style.opacity = isToday(viewDate) ? '0.3' : '1';
-  nextBtn.style.pointerEvents = isToday(viewDate) ? 'none' : 'auto';
   restoreDayState();
   buildWeekStrip();
 }
@@ -350,7 +355,6 @@ function renderDate() {
 function changeDay(delta) {
   const newDate = new Date(viewDate);
   newDate.setDate(newDate.getDate() + delta);
-  if (newDate > new Date()) return; // no future days
   viewDate = newDate;
   renderDate();
 }
@@ -383,24 +387,22 @@ function dayPct(key) {
 function buildWeekStrip() {
   const strip = document.getElementById('week-strip');
   strip.innerHTML = '';
-  // Get Monday of the viewed week
   const start = new Date(viewDate);
   const dow = start.getDay();
-  start.setDate(start.getDate() - (dow === 0 ? 6 : dow - 1)); // Monday start
+  start.setDate(start.getDate() - (dow === 0 ? 6 : dow - 1));
   for (let i = 0; i < 7; i++) {
     const d = new Date(start);
     d.setDate(d.getDate() + i);
     const key = dateKey(d);
     const pct = dayPct(key);
-    const future = d > new Date();
     const viewing = key === TODAY_KEY;
     const el = document.createElement('div');
-    el.style.cssText = `flex:1;text-align:center;cursor:${future?'default':'pointer'};opacity:${future?'0.3':'1'};`;
+    el.style.cssText = 'flex:1;text-align:center;cursor:pointer;';
     const ringColor = pct === 100 ? 'var(--sage)' : pct > 0 ? 'var(--gold)' : 'var(--stone)';
     el.innerHTML = `
       <div style="font-size:9px;color:var(--muted);margin-bottom:4px;">${dayShort[d.getDay()]}</div>
       <div style="width:28px;height:28px;border-radius:50%;margin:0 auto;border:2px solid ${ringColor};background:${pct===100?'var(--sage)':pct>0?'var(--gold-lt)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:${pct===100?'white':'var(--muted)'};${viewing?'box-shadow:0 0 0 2px var(--clay);':''}">${pct===100?'✓':d.getDate()}</div>`;
-    if (!future) el.onclick = () => { viewDate = d; renderDate(); };
+    el.onclick = () => { viewDate = new Date(d); renderDate(); };
     strip.appendChild(el);
   }
 }
@@ -506,11 +508,11 @@ const bookColors = {
   'yogi':'#6B8E6B','soul':'#8B7BA8','manual':'#9A8E82'
 };
 const bookUnits = {
-  '4a':'pg','hyw':'ch','sutras':'pg','chakra':'chakra','key':'pg',
+  '4a':'pg','hyw':'ch','sutras':'HYW ch','chakra':'chakra','key':'pg',
   'tao':'ch','pow':'ch','gita':'ch','yogi':'part','soul':'part','manual':'pg'
 };
 const bookTotals = {
-  '4a':138,'hyw':48,'sutras':280,'chakra':7,'key':230,
+  '4a':138,'hyw':48,'sutras':48,'chakra':7,'key':230,
   'tao':81,'pow':10,'gita':18,'yogi':3,'soul':5,'manual':1
 };
 
@@ -532,6 +534,7 @@ function buildReadingTracker() {
     const pct = total > 1 ? Math.min(100, Math.round((current/total)*100)) : (current >= 1 ? 100 : 0);
 
     const card = document.createElement('div');
+    card.setAttribute('data-book-card', b.id);
     card.style.cssText = 'background:var(--warm-white);border:.5px solid var(--stone);border-radius:14px;padding:16px;margin-bottom:10px;';
 
     card.innerHTML = `
@@ -539,33 +542,43 @@ function buildReadingTracker() {
         <div style="width:10px;height:10px;border-radius:50%;background:${bookColors[b.id]};flex-shrink:0;"></div>
         <div style="flex:1;">
           <div style="font-size:13px;font-weight:500;color:var(--umber);">${b.name}</div>
-          <div style="font-size:10px;color:var(--muted);">${b.author}</div>
+          <div style="font-size:10px;color:var(--muted);">${b.author}${b.id==='sutras'?' · read alongside How Yoga Works':''}</div>
         </div>
-        <div style="font-size:18px;font-weight:600;color:${pct===100?'var(--sage-dk)':'var(--clay)'};">${pct}%</div>
+        <div data-pct style="font-size:18px;font-weight:600;color:${pct===100?'var(--sage-dk)':'var(--clay)'};">${pct}%</div>
       </div>
       <div style="height:8px;background:var(--stone);border-radius:4px;overflow:hidden;margin-bottom:10px;">
-        <div style="height:100%;border-radius:4px;background:linear-gradient(90deg,${bookColors[b.id]},var(--gold));width:${pct}%;transition:width .3s;"></div>
+        <div data-bar style="height:100%;border-radius:4px;background:linear-gradient(90deg,${bookColors[b.id]},var(--gold));width:${pct}%;transition:width .3s;"></div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <span style="font-size:11px;color:var(--muted);">I'm on ${unit}</span>
-        <input type="number" min="0" max="${total}" value="${current}" 
-          style="width:58px;border:1px solid var(--stone);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--umber);background:var(--warm-white);font-family:'DM Sans',sans-serif;"
+        <input type="number" inputmode="numeric" min="0" max="${total}" value="${current || ''}" placeholder="0"
+          style="width:64px;border:1px solid var(--stone);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--umber);background:var(--warm-white);font-family:'DM Sans',sans-serif;"
           onchange="updateReading('${b.id}', this.value, ${total}, this)"
+          onblur="updateReading('${b.id}', this.value, ${total}, this)"
           oninput="updateReading('${b.id}', this.value, ${total}, this)">
         <span style="font-size:11px;color:var(--muted);">of ${total} ${unit}${total>1?'s':''}</span>
-        ${pct===100?'<span style="font-size:10px;font-weight:600;color:var(--sage-dk);">✓ Done!</span>':''}
+        <span data-done style="font-size:10px;font-weight:600;color:var(--sage-dk);display:${pct===100?'inline':'none'};">✓ Done!</span>
       </div>`;
     rt.appendChild(card);
   });
 }
 
 function updateReading(bookId, val, total, inputEl) {
-  const num = Math.max(0, Math.min(total, parseInt(val)||0));
+  const num = Math.max(0, Math.min(total, parseInt(val) || 0));
   const readData = load('reading-progress');
   readData[bookId] = num;
   save('reading-progress', readData);
-  // Rebuild to update % and bar
-  buildReadingTracker();
+  // Update just this card's bar and % — don't rebuild (kills typing)
+  const card = inputEl.closest('[data-book-card]');
+  if (card) {
+    const pct = total > 1 ? Math.min(100, Math.round((num/total)*100)) : (num >= 1 ? 100 : 0);
+    const bar = card.querySelector('[data-bar]');
+    const pctEl = card.querySelector('[data-pct]');
+    const doneEl = card.querySelector('[data-done]');
+    if (bar) bar.style.width = pct + '%';
+    if (pctEl) { pctEl.textContent = pct + '%'; pctEl.style.color = pct===100 ? 'var(--sage-dk)' : 'var(--clay)'; }
+    if (doneEl) doneEl.style.display = pct === 100 ? 'inline' : 'none';
+  }
 }
 
 buildReadingTracker();
