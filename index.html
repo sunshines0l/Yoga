@@ -257,25 +257,35 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--um
         <div class="dtask-time">Bedtime</div>
       </div>
     </div>
+    <div class="today-section-label">This week's practice</div>
     <div class="daily-task-card">
-      <div class="daily-task-row" id="dt-news" onclick="toggleDaily('news')">
-        <div class="dtask-check" id="dc-news">📵</div>
+      <div class="daily-task-row" id="dt-listening" onclick="toggleDaily('listening')">
+        <div class="dtask-check" id="dc-listening">👂</div>
         <div class="dtask-info">
-          <div class="dtask-name" id="dn-news">News + social media fast</div>
-          <div class="dtask-sub">This week's practice. Did you stay off today?</div>
+          <div class="dtask-name" id="dn-listening">Listening inquiry</div>
+          <div class="dtask-sub">What is my already-always listening? Notice it today, journal it.</div>
         </div>
         <div class="dtask-time">All day</div>
       </div>
     </div>
     <div class="daily-task-card">
-      <div class="daily-task-row" id="dt-complaint" onclick="toggleDaily('complaint')">
-        <div class="dtask-check" id="dc-complaint">👁️</div>
+      <div class="daily-task-row" id="dt-mods" onclick="toggleDaily('mods')">
+        <div class="dtask-check" id="dc-mods">🧱</div>
         <div class="dtask-info">
-          <div class="dtask-name" id="dn-complaint">Complaint observation</div>
-          <div class="dtask-sub">Notice every time you complained or made a clear request instead.</div>
+          <div class="dtask-name" id="dn-mods">Modifications practice</div>
+          <div class="dtask-sub">At least once this week: use a modification in every pose. Check the day you do it.</div>
         </div>
-        <div class="dtask-time">All day</div>
+        <div class="dtask-time">Once</div>
       </div>
+    </div>
+
+    <div class="today-section-label">My personal intentions</div>
+    <div id="personal-list"></div>
+    <div style="display:flex;gap:8px;margin-top:6px;">
+      <input id="personal-input" type="text" placeholder="Add something you're working on..."
+        style="flex:1;border:1px solid var(--stone);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--umber);background:var(--warm-white);font-family:'DM Sans',sans-serif;"
+        onkeydown="if(event.key==='Enter')addPersonal()">
+      <button onclick="addPersonal()" style="padding:0 16px;border-radius:10px;border:none;background:var(--clay);color:white;font-size:12px;font-weight:500;cursor:pointer;">Add</button>
     </div>
 
     <div style="text-align:center;margin-top:20px;">
@@ -373,16 +383,11 @@ function restoreDayState() {
     }
   });
   buildJournalDots(d['journal-count'] || 0);
+  buildPersonal();
   updateRing();
 }
 
-function dayPct(key) {
-  const d = load('daily-'+key);
-  let done = 0;
-  DAILY_IDS.forEach(id => { if (d[id]) done++; });
-  if ((d['journal-count']||0) >= 6) done++;
-  return Math.round((done/(DAILY_IDS.length+1))*100);
-}
+function dayPct(key) { return computePct(key); }
 
 function buildWeekStrip() {
   const strip = document.getElementById('week-strip');
@@ -413,21 +418,88 @@ document.getElementById('progress-label').textContent = `Week ${CURRENT_WEEK} of
 document.getElementById('progress-fill').style.width = `${(CURRENT_WEEK/14)*100}%`;
 
 // ── DAILY TASKS ───────────────────────────────────────────────────────────
-const DAILY_IDS = ['am-med','jip','pm-med','bedtime','news','complaint'];
-const DAILY_EMOJIS = {'am-med':'🧘','jip':'🔥','pm-med':'🌙','bedtime':'📖','news':'📵','complaint':'👁️'};
+const DAILY_IDS = ['am-med','jip','pm-med','bedtime','listening','mods'];
+const DAILY_EMOJIS = {'am-med':'🧘','jip':'🔥','pm-med':'🌙','bedtime':'📖','listening':'👂','mods':'🧱'};
+// Modifications is a once-a-week task, so it doesn't count toward the daily %
+const RING_IDS = DAILY_IDS.filter(id => id !== 'mods');
+
+function computePct(key) {
+  const d = load('daily-'+key);
+  const personal = loadPersonal();
+  let done = 0;
+  RING_IDS.forEach(id => { if (d[id]) done++; });
+  if ((d['journal-count']||0) >= 6) done++;
+  personal.forEach(p => { if (d['p-'+p.id]) done++; });
+  const total = RING_IDS.length + 1 + personal.length;
+  return Math.round((done/total)*100);
+}
 
 function updateRing() {
-  const todayData = load('daily-'+TODAY_KEY);
-  const journalCount = todayData['journal-count'] || 0;
-  let done = 0;
-  DAILY_IDS.forEach(id => { if (todayData[id]) done++; });
-  // Journal counts as done if >= 6
-  if (journalCount >= 6) done++;
-  const total = DAILY_IDS.length + 1; // +1 for journal
-  const pct = Math.round((done/total)*100);
+  const pct = computePct(TODAY_KEY);
   const circ = 113;
   document.getElementById('today-ring').style.strokeDashoffset = circ - (circ * pct / 100);
   document.getElementById('today-ring-pct').textContent = pct + '%';
+}
+
+// ── PERSONAL INTENTIONS ───────────────────────────────────────────────────
+function loadPersonal() {
+  try { return JSON.parse(localStorage.getItem('personal-intentions') || '[]'); } catch { return []; }
+}
+function savePersonal(list) {
+  try { localStorage.setItem('personal-intentions', JSON.stringify(list)); } catch {}
+}
+function addPersonal() {
+  const input = document.getElementById('personal-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const list = loadPersonal();
+  list.push({ id: Date.now().toString(), text });
+  savePersonal(list);
+  input.value = '';
+  buildPersonal();
+  updateRing();
+  buildWeekStrip();
+}
+function removePersonal(id) {
+  savePersonal(loadPersonal().filter(p => p.id !== id));
+  buildPersonal();
+  updateRing();
+  buildWeekStrip();
+}
+function togglePersonal(id) {
+  const d = load('daily-'+TODAY_KEY);
+  d['p-'+id] = !d['p-'+id];
+  save('daily-'+TODAY_KEY, d);
+  buildPersonal();
+  updateRing();
+  buildWeekStrip();
+}
+function buildPersonal() {
+  const wrap = document.getElementById('personal-list');
+  wrap.innerHTML = '';
+  const d = load('daily-'+TODAY_KEY);
+  loadPersonal().forEach(p => {
+    const done = d['p-'+p.id];
+    const card = document.createElement('div');
+    card.className = 'daily-task-card';
+    card.innerHTML = `
+      <div class="daily-task-row${done?' done-row':''}">
+        <div class="dtask-check${done?' done':''}" style="cursor:pointer;">${done?'✓':'🌱'}</div>
+        <div class="dtask-info" style="cursor:pointer;">
+          <div class="dtask-name${done?' done':''}">${p.text.replace(/</g,'&lt;')}</div>
+          <div class="dtask-sub">Personal intention · daily</div>
+        </div>
+        <button title="Remove" style="border:none;background:none;color:var(--muted);font-size:16px;cursor:pointer;padding:4px 6px;">×</button>
+      </div>`;
+    const row = card.querySelector('.daily-task-row');
+    row.querySelector('.dtask-check').onclick = () => togglePersonal(p.id);
+    row.querySelector('.dtask-info').onclick = () => togglePersonal(p.id);
+    row.querySelector('button').onclick = (e) => {
+      e.stopPropagation();
+      if (confirm('Remove this intention?')) removePersonal(p.id);
+    };
+    wrap.appendChild(card);
+  });
 }
 
 function toggleDaily(id) {
@@ -591,7 +663,7 @@ const weeks = [
   {n:4,date:'Sep 4',title:'Labor Day Weekend',off:true},
   {n:5,date:'Sep 11',title:'Week 4 — Chakras 1 & 2',special:'Anatomy weekend is NEXT WEEK (Sep 18) — slides coming from Stacy.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'4a',items:['Pages 63–74']},{book:'hyw',items:['Chapters 12–20']},{book:'sutras',items:['Sutras relevant to HYW ch12–20']},{book:'chakra',items:['Chakras 1 + 2 (full chapters)']},{book:'key',items:['Part Two: pages 121 onwards']}]},
   {n:6,date:'Sep 18',title:'Week 5 — Physical Anatomy Weekend',special:'Physical Anatomy Workshop this weekend — open to the public.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'4a',items:['Pages 75–122 · The New Dream chapter']},{book:'hyw',items:['Chapters 21–30']},{book:'sutras',items:['Sutras relevant to HYW ch21–30']},{book:'tao',items:['Chapters 1–16 + write your notes']},{book:'chakra',items:['Chakras 3 + 4']},{book:'key',items:['Index A']}],extra:[{label:"THIS WEEK'S INQUIRY — Choosing or Going Along With?",color:'#C4714E',items:['Identify at least 3 things you feel obligated to do or do for "reasons"','Rewrite each starting with "I CHOOSE to..."','Notice: do you experience them differently framed as a choice?','Journal about the difference in how they feel','Share your observations with your group']},{label:'DAILY HOMEWORK THIS WEEK',color:'#2D2B4E',items:['Journal 6× during the day — white & black seeds — review at bedtime (pg 266 HYW)','Meditation 20 minutes × 2 per day (morning + evening)','Personal practice and self-care daily','News fast + social media fast this week','Complaint observations — track every time you complain']},{label:'SELF-OBSERVATION PRACTICE',color:'#8FA98C',items:['Practice non-complaining — make clear requests or state requirements instead','Reflect: what does this have to do with impeccability and your word?','Self-observe and journal: gossip, lying, creating stories to justify your position, complaining, making clear requests, acknowledgment and gratitude']}]},
-  {n:7,date:'Sep 25',title:'Week 6 — Power of Now Begins',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 31–38']},{book:'sutras',items:['Sutras relevant to HYW ch31–38']},{book:'tao',items:['Chapters 17–32 + notes']},{book:'chakra',items:['Chakras 5 + 6']},{book:'pow',items:['Chapters 1–3']},{book:'gita',items:['Introduction, About the Translation, Chapter 1']},{book:'key',items:['Index B and C']}]},
+  {n:7,date:'Sep 25',title:'Week 6 — Power of Now Begins',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 31–38']},{book:'sutras',items:['Sutras relevant to HYW ch31–38']},{book:'tao',items:['Chapters 17–32 + notes']},{book:'chakra',items:['Chakras 5 + 6']},{book:'pow',items:['Chapters 1–3']},{book:'gita',items:['Introduction, About the Translation, Chapter 1']},{book:'key',items:['Index B and C']}],explain:{title:'Understanding this week: Automatic vs Authentic Listening',html:`<strong>The core idea:</strong> you never hear people "clean." Before someone finishes a sentence, your mind is already running a filter on what they're saying. That filter is your <strong>already-always listening</strong>. It's automatic, it's been running for years, and you usually don't notice it. This homework is about catching it.<br><br><strong>What automatic listening sounds like in your head:</strong><br>· "I already know where this is going"<br>· "How do I fix this for them?" (giving advice when they just want to be heard)<br>· "Do I agree or disagree?"<br>· "That reminds me of when I..."<br>· "What's the right thing to say back?"<br><br><strong>What authentic listening is:</strong> you drop the filter and just receive. The handout calls it "exact duplication": what the person is feeling and saying lands in you exactly as it is, without adding, judging, or preparing a response. The test is how <em>they</em> leave: they should feel fully gotten.<br><br><em>En español: es la diferencia entre oír y escuchar. Oír es automático. Escuchar es una elección.</em><br><br><strong>What you actually do:</strong><br>1. Do both kinds of listening in real conversations, not in your head. Notice what each looks and feels like.<br>2. Practice authentic listening with someone who disagrees with you. That's where your filter is loudest.<br>3. Be able to explain authentic listening in your own words.<br><br><strong>A simple way to catch it:</strong> after a conversation, ask yourself "what was I doing while they talked?" Whatever the honest answer is, that's your listening.`},extra:[{label:'THIS WEEK\'S INQUIRY: Automatic vs Authentic Listening',color:'#C4714E',items:['Discover, in your own lived experience, the difference between listening with your already-always listening and listening authentically. This cannot be a thought experiment: actually do both.','Practice authentic listening, ideally with someone who does not share your ideas or positions. Duplicate exactly what exists where the speaker is, so they leave feeling that what was there is now where you are.','Be able to say what authentic listening is','Be able to say: "My already-always automatic listening is..."']},{label:'SHARE WITH YOUR GROUP',color:'#8FA98C',items:['Share your automatic listening with your group','Which "listenings" are there all the time, and which only show up in certain life situations?','How will these "listenings" limit your self-expression?']},{label:'DAILY HOMEWORK THIS WEEK',color:'#2D2B4E',items:['Personal practice and self-care','Studio practice: at least once this week, use modifications in every pose','Meditation: 20 minutes','Inquiry to stay in all week: what is my already-always listening? Journal and share','Journal 6× during the day, white & black seeds, review at bedtime (pg 266 HYW)','Reading: be complete, have integrity, be intentional']},{label:'TEACHING PRACTICE',color:'#D4A96A',items:['Videotape yourself teaching again','Give yourself feedback on the recording','Keep stop/start','Consider where else this feedback shows up in your real life']}]},
   {n:8,date:'Oct 2',title:'Week 7 — Energetic Anatomy Weekend',special:'Energetic Anatomy / Chakra Yoga Workshop this weekend.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 39–48 (final chapters)']},{book:'sutras',items:['Sutras relevant to HYW ch39–48']},{book:'tao',items:['Chapters 33–48 + notes']},{book:'chakra',items:['Chakra 7 — Crown']},{book:'pow',items:['Chapters 4–6']},{book:'gita',items:['Chapters 2–5']}]},
   {n:9,date:'Oct 9',title:'Week 8 — Integrating the Chakras',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'tao',items:['Chapters 49–64 + notes']},{book:'chakra',items:['Integration section — synthesize all 7 chakras']},{book:'pow',items:['Chapters 7–9']},{book:'gita',items:['Chapters 6–12']},{book:'soul',items:['Introduction + Part 1']}]},
   {n:10,date:'Oct 16',title:'Week 9 — Art of Assisting Workshop',special:"Craft of Connection Workshop. NOTE: Friday starts at 6pm this week (not 7pm).",schedule:{fri:'6–9pm · Book review + discussion (earlier start!)',sat:'9am–6pm training',sun:'1–7pm training'},reading:[{book:'tao',items:["Chapters 65–81 + notes — DONE with Tao!"]},{book:'pow',items:["Chapter 10 — DONE with Power of Now!"]},{book:'gita',items:["Chapters 13–18 — DONE with Bhagavad Gita!"]},{book:'soul',items:['Part 2']}]},
@@ -757,6 +829,17 @@ weeks.forEach(w => {
         rs.appendChild(bookEl);
       });
       body.appendChild(rs);
+    }
+
+    // Explanation box
+    if (w.explain) {
+      const ex = document.createElement('div');
+      ex.style.cssText = 'border-top:.5px solid var(--stone);padding:14px 18px;';
+      ex.innerHTML = `<div style="background:var(--gold-lt);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 14px;">
+        <div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7a5200;margin-bottom:8px;">${w.explain.title}</div>
+        <div style="font-size:11px;color:var(--umber);line-height:1.7;">${w.explain.html}</div>
+      </div>`;
+      body.appendChild(ex);
     }
 
     // Extra homework
