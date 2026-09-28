@@ -139,6 +139,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--um
 .bk-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .bk-text{font-size:11px;color:var(--umber);line-height:1.3;}
 .bk-abbr{font-weight:600;color:var(--muted);font-size:10px;}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:var(--stone);outline:none;margin:0;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--clay);cursor:pointer;border:3px solid var(--warm-white);box-shadow:0 1px 4px rgba(0,0,0,.25);}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--clay);cursor:pointer;border:3px solid var(--warm-white);box-shadow:0 1px 4px rgba(0,0,0,.25);}
+.collapse-hdr{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:10px 12px;background:var(--warm-white);border:.5px solid var(--stone);border-radius:12px;margin-bottom:10px;}
+.collapse-hdr:hover{background:var(--parchment);}
+.collapse-chev{font-size:10px;color:var(--muted);transition:transform .2s;}
+.collapse-chev.open{transform:rotate(90deg);}
 </style>
 </head>
 <body>
@@ -203,7 +210,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--um
       <div class="daily-task-row" id="dt-am-med" onclick="toggleDaily('am-med')">
         <div class="dtask-check" id="dc-am-med">🧘</div>
         <div class="dtask-info">
-          <div class="dtask-name" id="dn-am-med">AM Meditation · 20 min</div>
+          <div class="dtask-name" id="dn-am-med">AM Meditation · 25 min</div>
           <div class="dtask-sub">Sit before your phone. Ujjayi or natural breath.</div>
         </div>
         <div class="dtask-time">Morning</div>
@@ -241,7 +248,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--um
       <div class="daily-task-row" id="dt-pm-med" onclick="toggleDaily('pm-med')">
         <div class="dtask-check" id="dc-pm-med">🌙</div>
         <div class="dtask-info">
-          <div class="dtask-name" id="dn-pm-med">PM Meditation · 20 min</div>
+          <div class="dtask-name" id="dn-pm-med">PM Meditation · 25 min</div>
           <div class="dtask-sub">Wind down. Nadi Shodhana (alternate nostril) is perfect.</div>
         </div>
         <div class="dtask-time">Evening</div>
@@ -257,47 +264,52 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--um
         <div class="dtask-time">Bedtime</div>
       </div>
     </div>
-    <div class="today-section-label">This week's practice: Automatic vs Authentic Listening</div>
+    <div class="today-section-label">This week's practice: Three Aspects to Mastery</div>
     <div class="journal-counter">
       <div style="background:var(--gold-lt);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:14px;">
         <div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7a5200;margin-bottom:8px;">How this practice works</div>
         <div style="font-size:11px;color:var(--umber);line-height:1.7;">
-          <strong>The core idea:</strong> you never hear people "clean." Before someone finishes a sentence, your mind is already running a filter on what they're saying. That filter is your <strong>already-always listening</strong>. It's automatic, it's been running for years, and you usually don't notice it. This homework is about catching it.<br><br>
-          <strong>What automatic listening sounds like in your head:</strong><br>
-          · "I already know where this is going"<br>
-          · "How do I fix this for them?" (giving advice when they just want to be heard)<br>
-          · "Do I agree or disagree?"<br>
-          · "That reminds me of when I..."<br>
-          · "What's the right thing to say back?"<br><br>
-          <strong>What authentic listening is:</strong> you drop the filter and just receive. The handout calls it "exact duplication": what the person is feeling and saying lands in you exactly as it is, without adding, judging, or preparing a response. The test is how <em>they</em> leave: they should feel fully gotten.<br><br>
-          <em style="color:var(--muted);">En español: es la diferencia entre oír y escuchar. Oír es automático. Escuchar es una elección.</em><br><br>
-          <strong>What you actually do:</strong><br>
-          1. Do both kinds of listening in real conversations, not in your head. Notice what each looks and feels like.<br>
-          2. Practice authentic listening with someone who disagrees with you. That's where your filter is loudest.<br>
-          3. Be able to explain authentic listening in your own words.<br>
-          4. Be able to say: "My already-always automatic listening is..."<br><br>
-          <strong>A simple way to catch it:</strong> after a conversation, ask yourself "what was I doing while they talked?" Whatever the honest answer is, that's your listening.
+          <em style="color:var(--muted);">"Our greatness lies not so much in being able to remake the world as in being able to remake ourselves." — Gandhi</em><br><br><strong>The three aspects:</strong><br>1. <strong>Contribution</strong> — being someone who contributes and makes a difference<br>2. <strong>Mastering identity</strong> — and ultimately, mastering self<br>3. <strong>Mastering reality</strong> — being with someone the way they are, and the way they are not, without adding or taking anything away<br><br><strong>The Act, which is the heart of it:</strong> somewhere around age 3, something happened that you experienced as a failure. Too loud, too much, not enough, in the way. You made a decision about yourself, and then you built a character to survive it. That character is your <strong>identity</strong>. It worked. That is the problem. It worked so well you have been running it ever since, and now you think it is you.<br><br>Common acts: the responsible one, the easy one, the funny one, the one who never needs help, the achiever, the peacemaker, the invisible one. Your job this week is to find yours.<br><br><strong>Strong Suits:</strong> the strengths that grew out of the Act. The thing you are genuinely good at, built on top of a wound. That is why it is so hard to see. It is not a weakness, it is your best material.<br><br><strong>HAVE your identity vs BE your identity:</strong><br>· If you <em>are</em> your identity, you have to feed it, defend it, maintain it. Every conversation becomes a small audition.<br>· If you <em>have</em> it, you can see it, name it, use it when it serves and set it down when it does not. That is the freedom.<br>· The handout says it this way: HAVE your identity and BE yourself, rather than BE your identity to HAVE yourself.<br><br><strong>Possibility vs Identity:</strong><br>· From <strong>possibility</strong> you are generative: you touch, move, inspire, connect, breathe life in.<br>· From <strong>identity</strong> you are protecting: managing image, being right, looking good. That kills possibility.<br>· Notice which one you are speaking and acting from.<br><br><strong>BUT = reasonableness.</strong> Every "but" hands you a reason. Reasons sound legitimate, which is exactly what makes them a lid on your self-expression. "I would love to, but..."<br><em style="color:var(--muted);">En español: todo lo que va antes del "pero" no cuenta.</em><br><br><strong>My view of life is not the Truth.</strong> It is a view, built by your past. The future you are living into is created by who you are being right now, which came from your past. Unless you interrupt it, the past keeps writing the future.<br><br><strong>Where do you give in order to get?</strong> Look for the hidden invoice. You give help, agreement, generosity, attention, and there is a quiet expectation attached: approval, love, being seen as good, reciprocity. That is not giving, it is a trade. Find yours and be honest about it.<br><br><strong>Mastering reality</strong> is the same muscle as last week: being with someone exactly as they are and as they are not, without adding or subtracting anything.<br><br><strong>How to actually do this:</strong> none of it can be answered from theory. Catch yourself in real moments this week, write what you find, bring it to your group.
         </div>
       </div>
-      <div class="daily-task-row" id="dt-listening" onclick="toggleDaily('listening')" style="border-radius:10px;">
-        <div class="dtask-check" id="dc-listening">👂</div>
+      <div class="daily-task-row" id="dt-mastery" onclick="toggleDaily('mastery')" style="border-radius:10px;">
+        <div class="dtask-check" id="dc-mastery">🎭</div>
         <div class="dtask-info">
-          <div class="dtask-name" id="dn-listening">Listening inquiry</div>
-          <div class="dtask-sub">Did you practice and notice your listening today?</div>
+          <div class="dtask-name" id="dn-mastery">Mastery inquiry</div>
+          <div class="dtask-sub">Did you catch your Act, a Strong Suit, or a BUT today?</div>
         </div>
         <div class="dtask-time">All day</div>
       </div>
     </div>
+
+    <div class="today-section-label">This week's targets</div>
     <div class="daily-task-card">
-      <div class="daily-task-row" id="dt-mods" onclick="toggleDaily('mods')">
-        <div class="dtask-check" id="dc-mods">🧱</div>
+      <div class="daily-task-row" id="dt-record" onclick="toggleDaily('record')">
+        <div class="dtask-check" id="dc-record">🎙</div>
         <div class="dtask-info">
-          <div class="dtask-name" id="dn-mods">Modifications practice</div>
-          <div class="dtask-sub">At least once this week: use a modification in every pose. Check the day you do it.</div>
+          <div class="dtask-name" id="dn-record">Record Meditation Technique #2</div>
+          <div class="dtask-sub">Read it aloud and record yourself. Check the day you do it.</div>
         </div>
-        <div class="dtask-time">Once</div>
+        <div class="dtask-time" id="ct-record">0 of 3</div>
       </div>
     </div>
+    <div class="daily-task-card">
+      <div class="daily-task-row" id="dt-classes" onclick="toggleDaily('classes')">
+        <div class="dtask-check" id="dc-classes">👥</div>
+        <div class="dtask-info">
+          <div class="dtask-name" id="dn-classes">Group class</div>
+          <div class="dtask-sub">Two group classes this week. Check the day you go.</div>
+        </div>
+        <div class="dtask-time" id="ct-classes">0 of 2</div>
+      </div>
+    </div>
+
+    <div class="collapse-hdr" onclick="toggleReadingPanel()" style="margin-top:22px;">
+      <span class="collapse-chev" id="reading-chev">▸</span>
+      <span style="flex:1;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);">Reading progress</span>
+      <span id="reading-summary" style="font-size:11px;font-weight:600;color:var(--clay);"></span>
+    </div>
+    <div id="today-reading" style="display:none;margin-bottom:8px;"></div>
 
     <div class="today-section-label">My personal intentions</div>
     <div id="personal-list"></div>
@@ -336,6 +348,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--um
 
 <script>
 // ── DATE & WEEK ──────────────────────────────────────────────────────────
+function localDate(s) { const p = s.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
 function getCurrentWeek() {
   const today = new Date();
   const schedule = [
@@ -346,12 +359,14 @@ function getCurrentWeek() {
     {n:13,d:'2026-11-06'},{n:14,d:'2026-11-13'},
   ];
   let current = 1;
-  for (const w of schedule) { if (today >= new Date(w.d)) current = w.n; else break; }
+  for (const w of schedule) { if (today >= localDate(w.d)) current = w.n; else break; }
   return current;
 }
 const CURRENT_WEEK = getCurrentWeek();
 let viewDate = new Date();
-function dateKey(d) { return d.toISOString().slice(0,10); }
+function dateKey(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
 let TODAY_KEY = dateKey(viewDate);
 
 // ── STORAGE ──────────────────────────────────────────────────────────────
@@ -405,6 +420,7 @@ function restoreDayState() {
   buildJournalDots(d['journal-count'] || 0);
   buildPersonal();
   updateRing();
+  updateWeekTargets();
 }
 
 function dayPct(key) { return computePct(key); }
@@ -438,10 +454,35 @@ document.getElementById('progress-label').textContent = `Week ${CURRENT_WEEK} of
 document.getElementById('progress-fill').style.width = `${(CURRENT_WEEK/14)*100}%`;
 
 // ── DAILY TASKS ───────────────────────────────────────────────────────────
-const DAILY_IDS = ['am-med','jip','pm-med','bedtime','listening','mods'];
-const DAILY_EMOJIS = {'am-med':'🧘','jip':'🔥','pm-med':'🌙','bedtime':'📖','listening':'👂','mods':'🧱'};
-// Modifications is a once-a-week task, so it doesn't count toward the daily %
-const RING_IDS = DAILY_IDS.filter(id => id !== 'mods');
+const DAILY_IDS = ['am-med','jip','pm-med','bedtime','mastery','record','classes'];
+const DAILY_EMOJIS = {'am-med':'🧘','jip':'🔥','pm-med':'🌙','bedtime':'📖','mastery':'🎭','record':'🎙','classes':'👥'};
+// Weekly-target items don't count toward the daily %
+const WEEKLY_TARGETS = { record: 3, classes: 2 };
+const RING_IDS = DAILY_IDS.filter(id => !(id in WEEKLY_TARGETS));
+
+function weekCount(id) {
+  const start = new Date(viewDate);
+  const dow = start.getDay();
+  start.setDate(start.getDate() - (dow === 0 ? 6 : dow - 1));
+  let c = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    if (load('daily-'+dateKey(d))[id]) c++;
+  }
+  return c;
+}
+
+function updateWeekTargets() {
+  Object.keys(WEEKLY_TARGETS).forEach(id => {
+    const el = document.getElementById('ct-'+id);
+    if (!el) return;
+    const n = weekCount(id), goal = WEEKLY_TARGETS[id];
+    el.textContent = n + ' of ' + goal;
+    el.style.color = n >= goal ? 'var(--sage-dk)' : 'var(--muted)';
+    el.style.fontWeight = n >= goal ? '600' : '500';
+  });
+}
 
 function computePct(key) {
   const d = load('daily-'+key);
@@ -536,6 +577,7 @@ function toggleDaily(id) {
   }
   updateRing();
   buildWeekStrip();
+  updateWeekTargets();
 }
 
 function resetToday() {
@@ -641,9 +683,12 @@ function buildReadingTracker() {
       <div style="height:8px;background:var(--stone);border-radius:4px;overflow:hidden;margin-bottom:10px;">
         <div data-bar style="height:100%;border-radius:4px;background:linear-gradient(90deg,${bookColors[b.id]},var(--gold));width:${pct}%;transition:width .3s;"></div>
       </div>
+      <input type="range" data-slider min="0" max="${total}" value="${current}" step="1"
+        style="margin-bottom:12px;"
+        oninput="updateReading('${b.id}', this.value, ${total}, this)">
       <div style="display:flex;align-items:center;gap:8px;">
         <span style="font-size:11px;color:var(--muted);">I'm on ${unit}</span>
-        <input type="number" inputmode="numeric" min="0" max="${total}" value="${current || ''}" placeholder="0"
+        <input type="number" data-num inputmode="numeric" min="0" max="${total}" value="${current || ''}" placeholder="0"
           style="width:64px;border:1px solid var(--stone);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--umber);background:var(--warm-white);font-family:'DM Sans',sans-serif;"
           onchange="updateReading('${b.id}', this.value, ${total}, this)"
           onblur="updateReading('${b.id}', this.value, ${total}, this)"
@@ -655,24 +700,90 @@ function buildReadingTracker() {
   });
 }
 
-function updateReading(bookId, val, total, inputEl) {
+function updateReading(bookId, val, total, srcEl) {
   const num = Math.max(0, Math.min(total, parseInt(val) || 0));
   const readData = load('reading-progress');
   readData[bookId] = num;
   save('reading-progress', readData);
-  // Update just this card's bar and % — don't rebuild (kills typing)
-  const card = inputEl.closest('[data-book-card]');
-  if (card) {
-    const pct = total > 1 ? Math.min(100, Math.round((num/total)*100)) : (num >= 1 ? 100 : 0);
+  const pct = total > 1 ? Math.min(100, Math.round((num/total)*100)) : (num >= 1 ? 100 : 0);
+  // update every card for this book (Reading tab + Today panel stay in sync)
+  document.querySelectorAll('[data-book-card="' + bookId + '"]').forEach(card => {
     const bar = card.querySelector('[data-bar]');
     const pctEl = card.querySelector('[data-pct]');
     const doneEl = card.querySelector('[data-done]');
+    const numEl = card.querySelector('[data-num]');
+    const slEl = card.querySelector('[data-slider]');
     if (bar) bar.style.width = pct + '%';
-    if (pctEl) { pctEl.textContent = pct + '%'; pctEl.style.color = pct===100 ? 'var(--sage-dk)' : 'var(--clay)'; }
+    if (pctEl) { pctEl.textContent = pct + '%'; pctEl.style.color = pct === 100 ? 'var(--sage-dk)' : 'var(--clay)'; }
     if (doneEl) doneEl.style.display = pct === 100 ? 'inline' : 'none';
-  }
+    if (numEl && numEl !== srcEl) numEl.value = num;   // never fight the field being typed in
+    if (slEl && slEl !== srcEl) slEl.value = num;
+  });
+  updateReadingSummary();
 }
 
+// ── TODAY TAB READING PANEL ───────────────────────────────────────────────
+function toggleReadingPanel() {
+  const panel = document.getElementById('today-reading');
+  const chev = document.getElementById('reading-chev');
+  const open = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  chev.classList.toggle('open', open);
+  try { localStorage.setItem('reading-panel-open', open ? '1' : '0'); } catch {}
+}
+
+function updateReadingSummary() {
+  const el = document.getElementById('reading-summary');
+  if (!el) return;
+  const readData = load('reading-progress');
+  const list = books.filter(b => b.id !== 'manual');
+  let sum = 0;
+  list.forEach(b => {
+    const tot = bookTotals[b.id];
+    sum += Math.min(100, Math.round(((readData[b.id] || 0) / tot) * 100));
+  });
+  el.textContent = Math.round(sum / list.length) + '% overall';
+}
+
+function buildTodayReading() {
+  const wrap = document.getElementById('today-reading');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const readData = load('reading-progress');
+  books.filter(b => b.id !== 'manual').forEach(b => {
+    const cur = readData[b.id] || 0;
+    const tot = bookTotals[b.id];
+    const unit = bookUnits[b.id];
+    const pct = Math.min(100, Math.round((cur / tot) * 100));
+    const row = document.createElement('div');
+    row.setAttribute('data-book-card', b.id);
+    row.style.cssText = 'background:var(--warm-white);border:.5px solid var(--stone);border-radius:10px;padding:10px 12px;margin-bottom:6px;';
+    row.innerHTML =
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:' + bookColors[b.id] + ';flex-shrink:0;"></div>' +
+        '<div style="flex:1;font-size:11px;font-weight:500;color:var(--umber);line-height:1.3;">' + b.name + '</div>' +
+        '<input type="number" data-num inputmode="numeric" min="0" max="' + tot + '" value="' + (cur || '') + '" placeholder="0" ' +
+          'style="width:50px;border:1px solid var(--stone);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--umber);background:var(--warm-white);font-family:\'DM Sans\',sans-serif;" ' +
+          'onchange="updateReading(\'' + b.id + '\', this.value, ' + tot + ', this)" ' +
+          'onblur="updateReading(\'' + b.id + '\', this.value, ' + tot + ', this)" ' +
+          'oninput="updateReading(\'' + b.id + '\', this.value, ' + tot + ', this)">' +
+        '<span style="font-size:10px;color:var(--muted);white-space:nowrap;">of ' + tot + ' ' + unit + '</span>' +
+        '<span data-pct style="font-size:11px;font-weight:600;min-width:34px;text-align:right;color:' + (pct === 100 ? 'var(--sage-dk)' : 'var(--clay)') + ';">' + pct + '%</span>' +
+      '</div>' +
+      '<input type="range" data-slider min="0" max="' + tot + '" value="' + cur + '" step="1" ' +
+        'oninput="updateReading(\'' + b.id + '\', this.value, ' + tot + ', this)">';
+    wrap.appendChild(row);
+  });
+  updateReadingSummary();
+  try {
+    if (localStorage.getItem('reading-panel-open') === '1') {
+      wrap.style.display = 'block';
+      document.getElementById('reading-chev').classList.add('open');
+    }
+  } catch {}
+}
+
+buildTodayReading();
 buildReadingTracker();
 
 // ── WEEKS DATA ────────────────────────────────────────────────────────────
@@ -684,7 +795,7 @@ const weeks = [
   {n:5,date:'Sep 11',title:'Week 4 — Chakras 1 & 2',special:'Anatomy weekend is NEXT WEEK (Sep 18) — slides coming from Stacy.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'4a',items:['Pages 63–74']},{book:'hyw',items:['Chapters 12–20']},{book:'sutras',items:['Sutras relevant to HYW ch12–20']},{book:'chakra',items:['Chakras 1 + 2 (full chapters)']},{book:'key',items:['Part Two: pages 121 onwards']}]},
   {n:6,date:'Sep 18',title:'Week 5 — Physical Anatomy Weekend',special:'Physical Anatomy Workshop this weekend — open to the public.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'4a',items:['Pages 75–122 · The New Dream chapter']},{book:'hyw',items:['Chapters 21–30']},{book:'sutras',items:['Sutras relevant to HYW ch21–30']},{book:'tao',items:['Chapters 1–16 + write your notes']},{book:'chakra',items:['Chakras 3 + 4']},{book:'key',items:['Index A']}],extra:[{label:"THIS WEEK'S INQUIRY — Choosing or Going Along With?",color:'#C4714E',items:['Identify at least 3 things you feel obligated to do or do for "reasons"','Rewrite each starting with "I CHOOSE to..."','Notice: do you experience them differently framed as a choice?','Journal about the difference in how they feel','Share your observations with your group']},{label:'DAILY HOMEWORK THIS WEEK',color:'#2D2B4E',items:['Journal 6× during the day — white & black seeds — review at bedtime (pg 266 HYW)','Meditation 20 minutes × 2 per day (morning + evening)','Personal practice and self-care daily','News fast + social media fast this week','Complaint observations — track every time you complain']},{label:'SELF-OBSERVATION PRACTICE',color:'#8FA98C',items:['Practice non-complaining — make clear requests or state requirements instead','Reflect: what does this have to do with impeccability and your word?','Self-observe and journal: gossip, lying, creating stories to justify your position, complaining, making clear requests, acknowledgment and gratitude']}]},
   {n:7,date:'Sep 25',title:'Week 6 — Power of Now Begins',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 31–38']},{book:'sutras',items:['Sutras relevant to HYW ch31–38']},{book:'tao',items:['Chapters 17–32 + notes']},{book:'chakra',items:['Chakras 5 + 6']},{book:'pow',items:['Chapters 1–3']},{book:'gita',items:['Introduction, About the Translation, Chapter 1']},{book:'key',items:['Index B and C']}],explain:{title:'Understanding this week: Automatic vs Authentic Listening',html:`<strong>The core idea:</strong> you never hear people "clean." Before someone finishes a sentence, your mind is already running a filter on what they're saying. That filter is your <strong>already-always listening</strong>. It's automatic, it's been running for years, and you usually don't notice it. This homework is about catching it.<br><br><strong>What automatic listening sounds like in your head:</strong><br>· "I already know where this is going"<br>· "How do I fix this for them?" (giving advice when they just want to be heard)<br>· "Do I agree or disagree?"<br>· "That reminds me of when I..."<br>· "What's the right thing to say back?"<br><br><strong>What authentic listening is:</strong> you drop the filter and just receive. The handout calls it "exact duplication": what the person is feeling and saying lands in you exactly as it is, without adding, judging, or preparing a response. The test is how <em>they</em> leave: they should feel fully gotten.<br><br><em>En español: es la diferencia entre oír y escuchar. Oír es automático. Escuchar es una elección.</em><br><br><strong>What you actually do:</strong><br>1. Do both kinds of listening in real conversations, not in your head. Notice what each looks and feels like.<br>2. Practice authentic listening with someone who disagrees with you. That's where your filter is loudest.<br>3. Be able to explain authentic listening in your own words.<br><br><strong>A simple way to catch it:</strong> after a conversation, ask yourself "what was I doing while they talked?" Whatever the honest answer is, that's your listening.`},extra:[{label:'THIS WEEK\'S INQUIRY: Automatic vs Authentic Listening',color:'#C4714E',items:['Discover, in your own lived experience, the difference between listening with your already-always listening and listening authentically. This cannot be a thought experiment: actually do both.','Practice authentic listening, ideally with someone who does not share your ideas or positions. Duplicate exactly what exists where the speaker is, so they leave feeling that what was there is now where you are.','Be able to say what authentic listening is','Be able to say: "My already-always automatic listening is..."']},{label:'SHARE WITH YOUR GROUP',color:'#8FA98C',items:['Share your automatic listening with your group','Which "listenings" are there all the time, and which only show up in certain life situations?','How will these "listenings" limit your self-expression?']},{label:'DAILY HOMEWORK THIS WEEK',color:'#2D2B4E',items:['Personal practice and self-care','Studio practice: at least once this week, use modifications in every pose','Meditation: 20 minutes','Inquiry to stay in all week: what is my already-always listening? Journal and share','Journal 6× during the day, white & black seeds, review at bedtime (pg 266 HYW)','Reading: be complete, have integrity, be intentional']},{label:'TEACHING PRACTICE',color:'#D4A96A',items:['Videotape yourself teaching again','Give yourself feedback on the recording','Keep stop/start','Consider where else this feedback shows up in your real life']}]},
-  {n:8,date:'Oct 2',title:'Week 7 — Energetic Anatomy Weekend',special:'Energetic Anatomy / Chakra Yoga Workshop this weekend.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 39–48 (final chapters)']},{book:'sutras',items:['Sutras relevant to HYW ch39–48']},{book:'tao',items:['Chapters 33–48 + notes']},{book:'chakra',items:['Chakra 7 — Crown']},{book:'pow',items:['Chapters 4–6']},{book:'gita',items:['Chapters 2–5']}]},
+  {n:8,date:'Oct 2',title:'Week 7 — Energetic Anatomy Weekend',special:'Energetic Anatomy / Chakra Yoga Workshop this weekend.',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'hyw',items:['Chapters 39–48 (final chapters)']},{book:'sutras',items:['Sutras relevant to HYW ch39–48']},{book:'tao',items:['Chapters 33–48 + notes']},{book:'chakra',items:['Chakra 7 — Crown']},{book:'pow',items:['Chapters 4–6']},{book:'gita',items:['Chapters 2–5']}],explain:{title:'Understanding this week: Three Aspects to Mastery',html:`<em style="color:var(--muted);">"Our greatness lies not so much in being able to remake the world as in being able to remake ourselves." — Gandhi</em><br><br><strong>The three aspects:</strong><br>1. <strong>Contribution</strong> — being someone who contributes and makes a difference<br>2. <strong>Mastering identity</strong> — and ultimately, mastering self<br>3. <strong>Mastering reality</strong> — being with someone the way they are, and the way they are not, without adding or taking anything away<br><br><strong>The Act, which is the heart of it:</strong> somewhere around age 3, something happened that you experienced as a failure. Too loud, too much, not enough, in the way. You made a decision about yourself, and then you built a character to survive it. That character is your <strong>identity</strong>. It worked. That is the problem. It worked so well you have been running it ever since, and now you think it is you.<br><br>Common acts: the responsible one, the easy one, the funny one, the one who never needs help, the achiever, the peacemaker, the invisible one. Your job this week is to find yours.<br><br><strong>Strong Suits:</strong> the strengths that grew out of the Act. The thing you are genuinely good at, built on top of a wound. That is why it is so hard to see. It is not a weakness, it is your best material.<br><br><strong>HAVE your identity vs BE your identity:</strong><br>· If you <em>are</em> your identity, you have to feed it, defend it, maintain it. Every conversation becomes a small audition.<br>· If you <em>have</em> it, you can see it, name it, use it when it serves and set it down when it does not. That is the freedom.<br>· The handout says it this way: HAVE your identity and BE yourself, rather than BE your identity to HAVE yourself.<br><br><strong>Possibility vs Identity:</strong><br>· From <strong>possibility</strong> you are generative: you touch, move, inspire, connect, breathe life in.<br>· From <strong>identity</strong> you are protecting: managing image, being right, looking good. That kills possibility.<br>· Notice which one you are speaking and acting from.<br><br><strong>BUT = reasonableness.</strong> Every "but" hands you a reason. Reasons sound legitimate, which is exactly what makes them a lid on your self-expression. "I would love to, but..."<br><em style="color:var(--muted);">En español: todo lo que va antes del "pero" no cuenta.</em><br><br><strong>My view of life is not the Truth.</strong> It is a view, built by your past. The future you are living into is created by who you are being right now, which came from your past. Unless you interrupt it, the past keeps writing the future.<br><br><strong>Where do you give in order to get?</strong> Look for the hidden invoice. You give help, agreement, generosity, attention, and there is a quiet expectation attached: approval, love, being seen as good, reciprocity. That is not giving, it is a trade. Find yours and be honest about it.<br><br><strong>Mastering reality</strong> is the same muscle as last week: being with someone exactly as they are and as they are not, without adding or subtracting anything.<br><br><strong>How to actually do this:</strong> none of it can be answered from theory. Catch yourself in real moments this week, write what you find, bring it to your group.`},extra:[{label:"THE INQUIRY: Find your Act",color:'#C4714E',items:["Find the Act you created around age 3 to survive what you saw as a failure. What persona did you build?","Name your Strong Suits: the strengths that grew out of that Act","What do you pretend? With who? What does it cost you?","Catch yourself saying BUT this week. Every BUT hands you a reason that puts a lid on your self-expression.","Where do you give in order to get? Find the hidden invoice."]},{label:"JOURNAL AND BE READY TO SHARE",color:'#8FA98C',items:["When you live from possibility (your self): how do you speak, think, act, react? Are you touching, moving, inspiring, connecting, breathing life in?","When you come from your identity: what is the contrast? Where do you kill possibility?","Where do you give in order to get?"]},{label:"DAILY HOMEWORK THIS WEEK",color:'#2D2B4E',items:["The inquiry above, stay in it all week","Meditation: 25 minutes, 2x per day","Record yourself reading Meditation Technique Number 2, three times this week","Personal practice: are you putting in the feedback you gave yourself? Use video to check.","Two group classes this week","Self care"]},{label:"DISCUSS WITH YOUR SMALL GROUP",color:'#D4A96A',items:["My view of Life is not the Truth: the FUTURE you are living into is created from who you are being in the PRESENT, which comes from your PAST","BUT = reasonableness: giving reasons that establish a lie and put a lid on your self-expression","What do you pretend? With who? What does it cost you?","Choosing life vs going along with","Where do you give in order to get?","Identity and Strong Suits: how do you HAVE your identity and BE yourself, rather than BE your identity to HAVE yourself?","Did you discover the Act you created around age 3?"]}]},
   {n:9,date:'Oct 9',title:'Week 8 — Integrating the Chakras',schedule:{fri:'7–9pm · Book review + discussion',sat:'9–10:15am class · 1–6:30pm training',sun:'1–6:30pm training'},reading:[{book:'tao',items:['Chapters 49–64 + notes']},{book:'chakra',items:['Integration section — synthesize all 7 chakras']},{book:'pow',items:['Chapters 7–9']},{book:'gita',items:['Chapters 6–12']},{book:'soul',items:['Introduction + Part 1']}]},
   {n:10,date:'Oct 16',title:'Week 9 — Art of Assisting Workshop',special:"Craft of Connection Workshop. NOTE: Friday starts at 6pm this week (not 7pm).",schedule:{fri:'6–9pm · Book review + discussion (earlier start!)',sat:'9am–6pm training',sun:'1–7pm training'},reading:[{book:'tao',items:["Chapters 65–81 + notes — DONE with Tao!"]},{book:'pow',items:["Chapter 10 — DONE with Power of Now!"]},{book:'gita',items:["Chapters 13–18 — DONE with Bhagavad Gita!"]},{book:'soul',items:['Part 2']}]},
   {n:11,date:'Oct 23',title:'Casa Alma Retreat',off:true,special:'Off-site retreat — Casa Alma. This is part of the training. Show up fully.'},
@@ -711,6 +822,29 @@ function toggleComplete(weekNum) {
   btn.style.background = done ? 'var(--sage-lt)' : 'transparent';
   btn.style.color = done ? 'var(--sage-dk)' : 'var(--muted)';
   badge.className = 'week-badge ' + (done ? 'badge-done' : 'badge-future');
+  moveWeek(weekNum);
+}
+
+// Put a week card in the right list, keeping week order
+function moveWeek(weekNum) {
+  const sec = document.getElementById('week-' + weekNum);
+  if (!sec || typeof doneBody === 'undefined') return;
+  const cm = load('ytt-completed');
+  const target = (cm[weekNum] || weekNum < CURRENT_WEEK) ? doneBody : container;
+  if (sec.parentNode !== target) {
+    const after = Array.prototype.find.call(target.children,
+      s => parseInt(s.id.replace('week-',''), 10) > weekNum);
+    if (after) target.insertBefore(sec, after); else target.appendChild(sec);
+  }
+  refreshDrawer();
+}
+
+function refreshDrawer() {
+  if (typeof doneBody === 'undefined') return;
+  const n = doneBody.children.length;
+  const cnt = document.getElementById('done-count');
+  if (cnt) cnt.textContent = n;
+  doneWrap.style.display = n === 0 ? 'none' : '';
 }
 
 // ── NAV ───────────────────────────────────────────────────────────────────
@@ -724,7 +858,12 @@ weeks.forEach(w => {
   btn.textContent = w.off ? (w.n===4?'Sep 4 off':'Oct 23 off') : w.date;
   btn.onclick = () => {
     switchTab('weeks', document.querySelectorAll('.tab-btn')[1]);
-    setTimeout(() => document.getElementById(`week-${w.n}`).scrollIntoView({behavior:'smooth'}), 50);
+    setTimeout(() => {
+      const el = document.getElementById(`week-${w.n}`);
+      const cb = document.getElementById('completed-body');
+      if (cb && cb.contains(el) && cb.style.display === 'none') toggleCompleted(true);
+      el.scrollIntoView({behavior:'smooth'});
+    }, 50);
   };
   nav.appendChild(btn);
 });
@@ -733,6 +872,30 @@ weeks.forEach(w => {
 const container = document.getElementById('weeks-container');
 let taskCounter = 0;
 const taskData = load('ytt-tasks');
+const completedMap = load('ytt-completed');
+
+// Past weeks and weeks you've marked done live in a collapsed drawer
+const doneWrap = document.createElement('div');
+const doneHdr = document.createElement('div');
+doneHdr.className = 'collapse-hdr';
+doneHdr.innerHTML = '<span class="collapse-chev" id="done-chev">▸</span>'
+  + '<span style="flex:1;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);">Completed weeks</span>'
+  + '<span id="done-count" style="font-size:11px;font-weight:600;color:var(--sage-dk);"></span>';
+doneHdr.onclick = toggleCompleted;
+const doneBody = document.createElement('div');
+doneBody.id = 'completed-body';
+doneBody.style.display = 'none';
+doneWrap.appendChild(doneHdr);
+doneWrap.appendChild(doneBody);
+container.parentNode.insertBefore(doneWrap, container);
+
+function toggleCompleted(force) {
+  const body = document.getElementById('completed-body');
+  const chev = document.getElementById('done-chev');
+  const open = force === true ? true : body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  chev.classList.toggle('open', open);
+}
 
 weeks.forEach(w => {
   const status = getStatus(w);
@@ -910,8 +1073,12 @@ weeks.forEach(w => {
   card.appendChild(hdr);
   card.appendChild(body);
   sec.appendChild(card);
-  container.appendChild(sec);
+  // archived = already marked done, or an earlier week than the one in progress
+  const archived = completedMap[w.n] || w.n < CURRENT_WEEK;
+  (archived ? doneBody : container).appendChild(sec);
 });
+
+refreshDrawer();
 
 // ── BOOK KEY ──────────────────────────────────────────────────────────────
 const bkGrid = document.getElementById('book-key');
